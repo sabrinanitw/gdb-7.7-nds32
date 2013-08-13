@@ -1327,6 +1327,680 @@ remote_fileio_func_system (char *buf)
     remote_fileio_return_success (WEXITSTATUS (ret));
 }
 
+static void
+remote_fileio_func_fopen (char *buf)
+{
+  CORE_ADDR ptrval;
+  CORE_ADDR mode_ptrval;
+  int length;
+  int mode_length;
+  char *pathname;
+  char *mode;
+  FILE *stream;
+
+  /* 1. Parameter: Ptr to pathname / length incl. trailing zero.  */
+  if (remote_fileio_extract_ptr_w_len (&buf, &ptrval, &length))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  /* 2. Parameter: Ptr to mode / length incl. trailing zero. */
+  if (remote_fileio_extract_ptr_w_len (&buf, &mode_ptrval, &mode_length))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  /* Request pathname.  */
+  pathname = alloca (length);
+  if (target_read_memory (ptrval, (gdb_byte *) pathname, length) != 0)
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  /* Request mode.  */
+  mode = alloca (mode_length);
+  if (target_read_memory (mode_ptrval, (gdb_byte *) mode, mode_length) != 0)
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  remote_fio_no_longjmp = 1;
+  stream = fopen (pathname, mode);
+  if (stream == NULL)
+    {
+      remote_fileio_return_errno (-1);
+      return;
+    }
+
+  remote_fileio_return_success ((int)stream);
+}
+
+static void
+remote_fileio_func_freopen (char *buf)
+{
+  CORE_ADDR ptrval;
+  CORE_ADDR mode_ptrval;
+  int length;
+  int mode_length;
+  char *pathname;
+  char *mode;
+  FILE *stream;
+  long old_stream_int;
+  FILE *old_stream;
+
+  /* 1. Parameter: Ptr to pathname / length incl. trailing zero.  */
+  if (remote_fileio_extract_ptr_w_len (&buf, &ptrval, &length))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  /* 2. Parameter: Ptr to mode / length incl. trailing zero.  */
+  if (remote_fileio_extract_ptr_w_len (&buf, &mode_ptrval, &mode_length))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  /* 3. Parameter: File stream.  */
+  if (remote_fileio_extract_int (&buf, &old_stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  /* Request pathname.  */
+  pathname = alloca (length);
+  if (target_read_memory (ptrval, (gdb_byte *) pathname, length) != 0)
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  /* Request mode.  */
+  mode = alloca (mode_length);
+  if (target_read_memory (mode_ptrval, (gdb_byte *) mode, mode_length) != 0)
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  old_stream = (FILE *)old_stream_int;
+
+  remote_fio_no_longjmp = 1;
+  stream = freopen (pathname, mode, old_stream);
+  if (stream == NULL)
+    {
+      remote_fileio_return_errno (-1);
+      return;
+    }
+
+  remote_fileio_return_success ((int)stream);
+}
+
+static void
+remote_fileio_func_fclose (char *buf)
+{
+  long stream_int;
+  FILE *stream;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  if (fclose (stream) == EOF)
+    {
+      remote_fileio_return_errno (-1);
+      return;
+    }
+
+  remote_fileio_return_success (0);
+}
+
+static void
+remote_fileio_func_fflush (char *buf)
+{
+  long stream_int;
+  FILE *stream;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  if (fflush (stream) == EOF)
+    {
+      remote_fileio_return_errno (-1);
+      return;
+    }
+
+  remote_fileio_return_success (0);
+}
+
+static void
+remote_fileio_func_fread (char *buf)
+{
+  long stream_int;
+  LONGEST lnum;
+  long lsize;
+  long lnmemb;
+  FILE *stream;
+  CORE_ADDR ptrval;
+  size_t size;
+  size_t nmemb;
+  gdb_byte *buffer;
+  size_t retval;
+
+  /* 1. Parameter: buffer pointer */
+  if (remote_fileio_extract_long (&buf, &lnum))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  ptrval = (CORE_ADDR) lnum;
+
+  /* 2. Parameter: object size */
+  if (remote_fileio_extract_int (&buf, &lsize))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  size = (size_t) lsize;
+
+  /* 3. Parameter: the number of objects */
+  if (remote_fileio_extract_int (&buf, &lnmemb))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  nmemb = (size_t) lnmemb;
+
+  /* 4. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  buffer = (gdb_byte *) xmalloc (size * nmemb);
+
+  remote_fio_no_longjmp = 1;
+  retval = fread (buffer, size, nmemb, stream);
+  if (retval < nmemb)
+    {
+      /* check EOF or error */
+      if (ferror (stream))
+	retval = -1;
+    }
+
+  if (retval > 0)
+    {
+      errno = target_write_memory (ptrval, buffer, size * retval);
+      if (errno != 0)
+	retval = -1;
+    }
+
+  if (retval < 0)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (retval);
+
+  xfree (buffer);
+}
+
+static void
+remote_fileio_func_fwrite (char *buf)
+{
+  long stream_int;
+  LONGEST lnum;
+  long lsize;
+  long lnmemb;
+  FILE *stream;
+  CORE_ADDR ptrval;
+  size_t size;
+  size_t nmemb;
+  gdb_byte *buffer;
+  size_t retval;
+
+  /* 1. Parameter: buffer pointer */
+  if (remote_fileio_extract_long (&buf, &lnum))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  ptrval = (CORE_ADDR) lnum;
+
+  /* 2. Parameter: object size */
+  if (remote_fileio_extract_int (&buf, &lsize))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  size = (size_t) lsize;
+
+  /* 3. Parameter: the number of objects */
+  if (remote_fileio_extract_int (&buf, &lnmemb))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  nmemb = (size_t) lnmemb;
+
+  /* 4. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  buffer = (gdb_byte *) xmalloc (size * nmemb);
+  if (target_read_memory (ptrval, buffer, size * nmemb) != 0)
+    {
+      xfree (buffer);
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  remote_fio_no_longjmp = 1;
+  retval = fwrite (buffer, size, nmemb, stream);
+  if (retval < nmemb)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (retval);
+
+  xfree (buffer);
+}
+
+static void
+remote_fileio_func_fgetc (char *buf)
+{
+  long stream_int;
+  FILE *stream;
+  int ch;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  ch = fgetc (stream);
+
+  if (ch == EOF)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (ch);
+}
+
+static void
+remote_fileio_func_fgets (char *buf)
+{
+  long stream_int;
+  long lnum;
+  long lsize;
+  CORE_ADDR ptrval;
+  int size;
+  FILE *stream;
+  char *buffer;
+  int retval = 0;
+
+  /* 1. Parameter: buffer pointer */
+  if (remote_fileio_extract_int (&buf, &lnum))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  ptrval = (CORE_ADDR) lnum;
+
+  /* 2. Parameter: Get size.  */
+  if (remote_fileio_extract_int (&buf, &lsize))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  size = (int)lsize;
+
+  /* 3. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  buffer = (gdb_byte *) xmalloc (size);
+  remote_fio_no_longjmp = 1;
+  if (fgets (buffer, size, stream) != NULL)
+    {
+      errno = target_write_memory (ptrval, buffer, size);
+      if (errno != 0)
+	retval = -1;
+    }
+  else
+    retval = -1;
+
+  if (retval == -1)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (ptrval);
+
+  xfree (buffer);
+}
+
+static void
+remote_fileio_func_fputc (char *buf)
+{
+  long stream_int;
+  long lchar;
+  FILE *stream;
+  int ch;
+
+  /* 1. Parameter: Get character.  */
+  if (remote_fileio_extract_int (&buf, &lchar))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  ch = (int)lchar;
+
+  /* 2. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  ch = fputc (ch, stream);
+
+  if (ch == EOF)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (ch);
+}
+
+static void
+remote_fileio_func_fputs (char *buf)
+{
+  long lnum;
+  long stream_int;
+  CORE_ADDR ptrval;
+  FILE *stream;
+  int retval;
+  char buffer[2048]; /* TODO: Assume the maximum length of string is 2048.  */
+
+  /* 1. Parameter: buffer pointer */
+  if (remote_fileio_extract_int (&buf, &lnum))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  ptrval = (CORE_ADDR) lnum;
+
+  /* 2. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  if (target_read_memory (ptrval, buffer, 2048) != 0)
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  remote_fio_no_longjmp = 1;
+  retval = fputs (buffer, stream);
+  if (retval == EOF)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (retval);
+}
+
+static void
+remote_fileio_func_ungetc (char *buf)
+{
+  long stream_int;
+  long lchar;
+  FILE *stream;
+  int ch;
+
+  /* 1. Parameter: Get character.  */
+  if (remote_fileio_extract_int (&buf, &lchar))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  ch = (int)lchar;
+
+  /* 2. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  ch = ungetc (ch, stream);
+
+  if (ch == EOF)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (ch);
+}
+
+static void
+remote_fileio_func_ftell (char *buf)
+{
+  long stream_int;
+  FILE *stream;
+  long position;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  position = ftell (stream);
+  if (position == -1)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success ((int)position);
+}
+
+static void
+remote_fileio_func_fseek (char *buf)
+{
+  long stream_int;
+  LONGEST loffset;
+  long lwhence;
+  FILE *stream;
+  long offset;
+  int whence;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  /* 2. Parameter: Get offset.  */
+  if (remote_fileio_extract_long (&buf, &loffset))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  offset = (long)loffset;
+
+  /* 2. Parameter: Get whence.  */
+  if (remote_fileio_extract_int (&buf, &lwhence))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  whence = (int)lwhence;
+
+  remote_fio_no_longjmp = 1;
+  if (fseek (stream, offset, whence) == -1)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (0);
+}
+
+static void
+remote_fileio_func_rewind (char *buf)
+{
+  long stream_int;
+  FILE *stream;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  rewind (stream);
+
+  remote_fileio_return_success (0);
+}
+
+static void
+remote_fileio_func_clearerr (char *buf)
+{
+  long stream_int;
+  FILE *stream;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  clearerr (stream);
+
+  remote_fileio_return_success (0);
+}
+
+static void
+remote_fileio_func_feof (char *buf)
+{
+  long stream_int;
+  FILE *stream;
+  int retval;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  retval = feof (stream);
+
+  if (retval == 0)
+    remote_fileio_return_errno (0);
+  else
+    remote_fileio_return_success (1);
+}
+
+static void
+remote_fileio_func_ferror (char *buf)
+{
+  long stream_int;
+  FILE *stream;
+  int retval;
+
+  /* 1. Parameter: Get stream.  */
+  if (remote_fileio_extract_int (&buf, &stream_int))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+  stream = (FILE *)stream_int;
+
+  remote_fio_no_longjmp = 1;
+  retval = ferror (stream);
+
+  if (retval == 0)
+    remote_fileio_return_errno (0);
+  else
+    remote_fileio_return_success (1);
+}
+
+static void
+remote_fileio_func_remove (char *buf)
+{
+  CORE_ADDR ptrval;
+  int length;
+  char *pathname;
+
+  /* 1. Parameter: Ptr to pathname / length incl. trailing zero.  */
+  if (remote_fileio_extract_ptr_w_len (&buf, &ptrval, &length))
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  /* Request pathname.  */
+  pathname = alloca (length);
+  if (target_read_memory (ptrval, (gdb_byte *) pathname, length) != 0)
+    {
+      remote_fileio_ioerror ();
+      return;
+    }
+
+  if (remove (pathname) == -1)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success (0);
+}
+
+static void
+remote_fileio_func_tmpfile (char *buf)
+{
+  FILE *tmpfp;
+
+  tmpfp = tmpfile ();
+
+  if (tmpfp == NULL)
+    remote_fileio_return_errno (-1);
+  else
+    remote_fileio_return_success ((int)tmpfp);
+}
+
 static struct {
   char *name;
   void (*func)(char *);
@@ -1343,6 +2017,25 @@ static struct {
   { "gettimeofday", remote_fileio_func_gettimeofday },
   { "isatty", remote_fileio_func_isatty },
   { "system", remote_fileio_func_system },
+  { "fopen", remote_fileio_func_fopen },
+  { "freopen", remote_fileio_func_freopen },
+  { "fclose", remote_fileio_func_fclose },
+  { "fflush", remote_fileio_func_fflush },
+  { "fread", remote_fileio_func_fread },
+  { "fwrite", remote_fileio_func_fwrite },
+  { "fgetc", remote_fileio_func_fgetc },
+  { "fgets", remote_fileio_func_fgets },
+  { "fputc", remote_fileio_func_fputc },
+  { "fputs", remote_fileio_func_fputs },
+  { "ungetc", remote_fileio_func_ungetc },
+  { "ftell", remote_fileio_func_ftell },
+  { "fseek", remote_fileio_func_fseek },
+  { "rewind", remote_fileio_func_rewind },
+  { "clearerr", remote_fileio_func_clearerr },
+  { "feof", remote_fileio_func_feof },
+  { "ferror", remote_fileio_func_ferror },
+  { "remove", remote_fileio_func_remove },
+  { "tmpfile", remote_fileio_func_tmpfile },
   { NULL, NULL }
 };
 
