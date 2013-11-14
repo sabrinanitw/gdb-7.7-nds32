@@ -1337,6 +1337,7 @@ remote_fileio_func_fopen (char *buf)
   char *pathname;
   char *mode;
   FILE *stream;
+  int ret;
 
   /* 1. Parameter: Ptr to pathname / length incl. trailing zero.  */
   if (remote_fileio_extract_ptr_w_len (&buf, &ptrval, &length))
@@ -1372,6 +1373,12 @@ remote_fileio_func_fopen (char *buf)
     {
       remote_fileio_return_errno (-1);
       return;
+    }
+  /* Set to unbuffered mode.  */
+  ret = setvbuf (stream, (char *) NULL, _IONBF, 0);
+  if (ret != 0)
+    {
+      error (_("Fail to set host stream buffering operations to unbuffered."));
     }
 
   remote_fileio_return_success ((int)stream);
