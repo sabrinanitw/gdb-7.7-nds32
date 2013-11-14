@@ -2017,8 +2017,11 @@ nds32_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
       else if (!soff)
 	{
 	  /* Adjust alignment, and only adjust one time for one argument.  */
-	  if ((align >> 2) > 0)
-	    goff = align_up (goff, align >> 2);
+	  if ((align >> 2) > 1)
+	    /* For BSP320, if size of the type is larger than 4, just aligned to
+	       even-numbered register.  [FIXME] For BSP400 ABI?  */
+	    goff = align_up (goff, 2);
+
 	  if (!tdep->abi_split && len > (REND - goff) * 4)
 	    goff = REND;
 	}
