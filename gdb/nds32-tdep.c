@@ -1393,9 +1393,6 @@ nds32_frame_unwind_cache (struct frame_info *this_frame,
   info->base = get_frame_register_unsigned (this_frame, NDS32_FP_REGNUM);
   (*this_prologue_cache) = info;
 
-  if (info->base == 0)
-    return info;
-
   pc = get_frame_func (this_frame);
   scan_limit = get_frame_pc (this_frame);
 
