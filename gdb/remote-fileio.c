@@ -1368,7 +1368,7 @@ remote_fileio_func_fopen (char *buf)
     }
 
   remote_fio_no_longjmp = 1;
-  stream = fopen (pathname, mode);
+  stream = gdb_fopen_cloexec (pathname, mode);
   if (stream == NULL)
     {
       remote_fileio_return_errno (-1);
@@ -1380,6 +1380,9 @@ remote_fileio_func_fopen (char *buf)
     {
       error (_("Fail to set host stream buffering operations to unbuffered."));
     }
+
+  /* Record the fileno of stream in remote_fio_data.fd_map[target_fd].  */
+  remote_fileio_fd_to_targetfd (fileno (stream));
 
   remote_fileio_return_success ((int)stream);
 }
@@ -1396,6 +1399,7 @@ remote_fileio_func_freopen (char *buf)
   FILE *stream;
   long old_stream_int;
   FILE *old_stream;
+  int target_fd;
 
   /* 1. Parameter: Ptr to pathname / length incl. trailing zero.  */
   if (remote_fileio_extract_ptr_w_len (&buf, &ptrval, &length))
@@ -1440,6 +1444,10 @@ remote_fileio_func_freopen (char *buf)
       return;
     }
 
+  /* Record the fileno of new stream in remote_fio_data.fd_map[target_fd].  */
+  target_fd = remote_fileio_fd_to_targetfd (fileno (old_stream));
+  remote_fio_data.fd_map[target_fd] = fileno (stream);
+
   remote_fileio_return_success ((int)stream);
 }
 
@@ -1448,6 +1456,7 @@ remote_fileio_func_fclose (char *buf)
 {
   long stream_int;
   FILE *stream;
+  int target_fd, fd;
 
   /* 1. Parameter: Get stream.  */
   if (remote_fileio_extract_int (&buf, &stream_int))
@@ -1457,6 +1466,16 @@ remote_fileio_func_fclose (char *buf)
     }
 
   stream = (FILE *)stream_int;
+  target_fd = fileno (stream);
+
+  fd = remote_fileio_map_fd (target_fd);
+  if (fd == FIO_FD_INVALID)
+    {
+      /* This fd has not been open via remote_fileio_func.
+	 Don't take care of it.  */
+      remote_fileio_return_success (0);
+      return;
+    }
 
   remote_fio_no_longjmp = 1;
   if (fclose (stream) == EOF)
@@ -1465,6 +1484,7 @@ remote_fileio_func_fclose (char *buf)
       return;
     }
 
+  remote_fileio_close_target_fd (target_fd);
   remote_fileio_return_success (0);
 }
 
