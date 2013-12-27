@@ -890,6 +890,43 @@ nds32_set_gloss_command (char *arg, int from_tty)
   do_cleanups (back_to);
 }
 
+/* Bug 6654 - Multiple watchpoints was be hit, GDB only shows one of them.
+
+FIXME: This is a dirty hacking for hooking remote->to_stopped_data_address,
+in order to handling multiple hit. This is not a bug at all.  */
+
+/* The original to_stopped_data_address handler.  */
+static int (*remote_stopped_data_address_p) (struct target_ops*, CORE_ADDR*);
+
+static int
+nds32_remote_stopped_data_address (struct target_ops *target,
+		CORE_ADDR *addr_p)
+{
+	if (!remote_stopped_data_address_p (target, addr_p))
+		return 0;
+
+	/* If the addr is 0x0, we assume SMW multiple hits.
+		 Pretent data_address is unknown and let GDB figure it out.  */
+	return (*addr_p) != 0;
+}
+
+static void
+nds32_remote_inferior_created_observer (struct target_ops *target,
+		int from_tty)
+{
+	/* nds32_query_target_command (NULL, 0); */
+
+	/* Hook remote to_stopped_data_address */
+	if ((strcmp (target->to_shortname, "remote") == 0
+				|| strcmp (target->to_shortname, "extended-remote") == 0)
+			&& target->to_stopped_data_address != nds32_remote_stopped_data_address)
+	{
+		printf ("[nds32] Hook remote stopped data address for watchpoints.\n");
+		remote_stopped_data_address_p = target->to_stopped_data_address;
+		target->to_stopped_data_address = nds32_remote_stopped_data_address;
+	}
+}
+
 static struct cmd_list_element *nds32_pipeline_cmdlist;
 static struct cmd_list_element *nds32_query_cmdlist;
 static struct cmd_list_element *nds32_reset_cmdlist;
@@ -905,6 +942,9 @@ static const struct internalvar_funcs nds32_target_type_funcs =
 void
 nds32_init_remote_cmds (void)
 {
+	/* Hook for query remote target information.  */
+	observer_attach_inferior_created (nds32_remote_inferior_created_observer);
+
   nds32_remote_info_init ();
 
   /* nds32 elf-check */
