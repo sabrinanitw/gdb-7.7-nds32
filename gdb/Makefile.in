@@ -586,7 +586,7 @@ ALL_TARGET_OBS = \
 	moxie-tdep.o \
 	msp430-tdep.o \
 	mt-tdep.o \
-	nds32-tdep.o nds32-remote.o \
+	nds32-tdep.o nds32-linux-tdep.o nds32-remote.o \
 	nios2-tdep.o nios2-linux-tdep.o \
 	nto-tdep.o \
 	ppc-linux-tdep.o ppcfbsd-tdep.o ppcnbsd-tdep.o ppcobsd-tdep.o  \
@@ -1556,7 +1556,7 @@ ALLDEPFILES = \
 	mipsnbsd-nat.c mipsnbsd-tdep.c \
 	mips64obsd-nat.c mips64obsd-tdep.c \
 	msp430-tdep.c \
-	nds32-tdep.c nds32-remote.c \
+	nds32-tdep.c nds32-linux-tdep.c nds32-remote.c \
 	nios2-tdep.c nios2-linux-tdep.c \
 	nbsd-nat.c nbsd-tdep.c obsd-tdep.c \
 	solib-osf.c \
