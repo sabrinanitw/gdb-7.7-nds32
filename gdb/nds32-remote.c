@@ -19,7 +19,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include "defs.h"
-#include "gdb_string.h"
+#include <string.h>
 #include "gdbcore.h"
 #include "gdbcmd.h"
 #include "gdbtypes.h"

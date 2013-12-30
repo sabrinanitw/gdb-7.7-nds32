@@ -29,7 +29,7 @@
 #include "regset.h"
 #include "target-descriptions.h"
 
-#include "gdb_string.h"
+#include <string.h>
 
 #include "glibc-tdep.h"
 #include "solib-svr4.h"
