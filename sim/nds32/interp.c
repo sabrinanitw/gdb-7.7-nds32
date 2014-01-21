@@ -792,8 +792,8 @@ nds32_decode32_alu2 (sim_cpu *cpu, const uint32_t insn, sim_cia cia)
       break;
     case 0x2:			/* ave */
       {
-	int64_t r = ((int64_t) CCPU_GPR[ra].s << 1)
-		    + ((int64_t) CCPU_GPR[rb].s << 1) + 1;
+	int64_t r = ((int64_t) CCPU_GPR[ra].s)
+		    + ((int64_t) CCPU_GPR[rb].s) + 1;
 	CCPU_GPR[rt].u = (r >> 1) & 0xFFFFFFFF;
       }
       break;
