@@ -1486,6 +1486,44 @@ nds32_decode32_misc (sim_cpu *cpu, const uint32_t insn, sim_cia cia)
 }
 
 static void
+nds32_decode32_simd (sim_cpu *cpu, const uint32_t insn, sim_cia cia)
+{
+  int rt = N32_RT5 (insn);
+  int ra = N32_RA5 (insn);
+  int rb = N32_RB5 (insn);
+  int a, b, c, d;
+
+  switch (insn & 0x3ff)
+    {
+    case 0x0:			/* pbsad */
+    case 0x1:			/* pbsada */
+      /* The four unsigned 8-bit elements of Ra are subtracted from the four
+	 unsigned 8-bit elements of Rb.  */
+      a = (CCPU_GPR[ra].u & 0xff) - (CCPU_GPR[rb].u & 0xff);
+      b = ((CCPU_GPR[ra].u >> 8) & 0xff) - ((CCPU_GPR[rb].u >> 8) & 0xff);
+      c = ((CCPU_GPR[ra].u >> 16) & 0xff) - ((CCPU_GPR[rb].u >> 16) & 0xff);
+      d = ((CCPU_GPR[ra].u >> 24) & 0xff) - ((CCPU_GPR[rb].u >> 24) & 0xff);
+
+      /* Absolute difference of four unsigned 8-bit data elements.  */
+      a = (a >= 0) ? a : -a;
+      b = (b >= 0) ? b : -b;
+      c = (c >= 0) ? c : -c;
+      d = (d >= 0) ? d : -d;
+
+      if ((insn & 0x3ff) == 0x0)
+	/* pbsad */
+	CCPU_GPR[rt].u = a + b + c + d;
+      else
+	/* pbsada */
+        CCPU_GPR[rt].u = CCPU_GPR[rt].u + a + b + c + d;
+      break;
+    default:
+      nds32_bad_op (cpu, cia, insn, "MISC");
+      break;
+    }
+}
+
+static void
 nds32_decode32 (sim_cpu *cpu, const uint32_t insn, sim_cia cia)
 {
   SIM_DESC sd = CPU_STATE (cpu);
@@ -1719,6 +1757,9 @@ nds32_decode32 (sim_cpu *cpu, const uint32_t insn, sim_cia cia)
       break;
     case 0x35:			/* COP */
       nds32_decode32_cop (cpu, insn, cia);
+      return;
+    case 0x38:			/* SIMD */
+      nds32_decode32_simd (cpu, insn, cia);
       return;
     default:
       nds32_bad_op (cpu, cia, insn, "32-bit");
