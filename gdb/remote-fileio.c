@@ -1384,7 +1384,7 @@ remote_fileio_func_fopen (char *buf)
   /* Record the fileno of stream in remote_fio_data.fd_map[target_fd].  */
   remote_fileio_fd_to_targetfd (fileno (stream));
 
-  remote_fileio_return_success ((int)stream);
+  remote_fileio_return_success ((intptr_t)stream);
 }
 
 static void
@@ -1448,7 +1448,7 @@ remote_fileio_func_freopen (char *buf)
   target_fd = remote_fileio_fd_to_targetfd (fileno (old_stream));
   remote_fio_data.fd_map[target_fd] = fileno (stream);
 
-  remote_fileio_return_success ((int)stream);
+  remote_fileio_return_success ((intptr_t)stream);
 }
 
 static void
@@ -2025,7 +2025,7 @@ remote_fileio_func_tmpfile (char *buf)
   if (tmpfp == NULL)
     remote_fileio_return_errno (-1);
   else
-    remote_fileio_return_success ((int)tmpfp);
+    remote_fileio_return_success ((intptr_t)tmpfp);
 }
 
 static struct {

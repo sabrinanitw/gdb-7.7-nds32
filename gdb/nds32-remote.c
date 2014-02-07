@@ -38,11 +38,10 @@
 #include "elf-bfd.h"		/* elf_elfheader () */
 #include "observer.h"		/* observer_attach_inferior_created () */
 
-//#include "nds32-remote.h"
-//>>>>>>> parent of 550cacd... Remove elf-check and gdbinit.
 #include "nds32-tdep.h"
-
 #include "nds32-elf.h"
+void nds32_init_remote_cmds (void);
+
 
 char *nds32_qparts [] =
 {
@@ -146,21 +145,6 @@ do_ui_file_put_memcpy (void *object, const char *buffer, long length_buffer)
     }
 
   memcpy (ui_buf->buf, buffer, length_buffer);
-}
-
-static void
-ui_file_buffer_init (struct ui_file_buffer *ub, int size)
-{
-  ub->buf_size = size;
-  ub->buf = xmalloc (size);
-}
-
-static void
-free_ui_file_buffer (void *ptr)
-{
-  struct ui_file_buffer *ui_buf = (struct ui_file_buffer *) ptr;
-
-  xfree (ui_buf->buf);
 }
 
 
