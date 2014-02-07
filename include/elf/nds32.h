@@ -195,7 +195,9 @@ END_RELOC_NUMBERS (R_NDS32_max)
      * E_NDS32_HAS_NO_MAC_INST		0x00100000
    These are added in v2.
      * E_NDS32_HAS_DIV_DX_INST		0x00002000
-     * E_NDS32_HAS_MAC_DX_INST		0x00100000  */
+     * E_NDS32_HAS_MAC_DX_INST		0x00100000
+
+ */
 
 /* MFUSR rt, PC and correct ISYNC, MSYNC instructions.
    Old N1213HC has no such instructions.  */

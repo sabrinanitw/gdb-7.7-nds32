@@ -34,17 +34,17 @@
 #define REG_LP		30
 #define REG_SP		31
 
-/* Macros for extracting fields or making an instruction.  */
-static const int nds32_r45map[] =
-{
-  0, 1, 2,  3,  4,  5,  6,  7,
+/*
+ * Macros for extracting fields or making an instruction.
+ */
+static const int nds32_r45map[] = {
+  0, 1, 2, 3, 4, 5, 6, 7,
   8, 9, 10, 11, 16, 17, 18, 19
 };
 
-static const int nds32_r54map[] =
-{
-   0,  1,  2,  3,  4,  5,  6,  7,
-   8,  9, 10, 11, -1, -1, -1, -1,
+static const int nds32_r54map[] = {
+  0, 1, 2, 3, 4, 5, 6, 7,
+  8, 9, 10, 11, -1, -1, -1, -1,
   12, 13, 14, 15, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1, -1, -1
 };
@@ -196,7 +196,7 @@ static const int nds32_r54map[] =
 
 
 /* These are opcodes for Nxx_TYPE macros.
-   They are prefixed by corresponding TYPE to avoid misusing.  */
+   They are prefixed by corresponding TYPE to avoid misusing.*/
 
 enum n32_opcodes
 {
@@ -580,7 +580,7 @@ enum n32_opcodes
   N32_FPU_MTCP_XR = 0xc,
 
   /* MTCP/XR b[14:10] */
-  N32_FPU_MTCP_XR_FMTCSR = 0x1
+  N32_FPU_MTCP_XR_FMTCSR = 0x1,
 };
 
 enum n16_opcodes
@@ -673,7 +673,7 @@ enum n16_opcodes
   N16_BFMI333_XLSB33 = 4,
   N16_BFMI333_X11B33 = 5,
   N16_BFMI333_BMSKI33 = 6,
-  N16_BFMI333_FEXTI33 = 7
+  N16_BFMI333_FEXTI33 = 7,
 };
 
 /* These macros a deprecated.  DO NOT use them anymore.
