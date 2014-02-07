@@ -715,8 +715,6 @@ enum
   MOD_8D = 0,
   MOD_C6_REG_7,
   MOD_C7_REG_7,
-  MOD_FF_REG_3,
-  MOD_FF_REG_5,
   MOD_0F01_REG_0,
   MOD_0F01_REG_1,
   MOD_0F01_REG_2,
@@ -3231,9 +3229,9 @@ static const struct dis386 reg_table[][8] = {
     { "incQ",	{ Evh1 } },
     { "decQ",	{ Evh1 } },
     { "call{T|}", { indirEv, BND } },
-    { MOD_TABLE (MOD_FF_REG_3) },
+    { "Jcall{T|}", { indirEp } },
     { "jmp{T|}", { indirEv, BND } },
-    { MOD_TABLE (MOD_FF_REG_5) },
+    { "Jjmp{T|}", { indirEp } },
     { "pushU",	{ stackEv } },
     { Bad_Opcode },
   },
@@ -11052,14 +11050,6 @@ static const struct dis386 mod_table[][2] = {
     { RM_TABLE (RM_C7_REG_7) },
   },
   {
-    /* MOD_FF_REG_3 */
-    { "Jcall{T|}", { indirEp } },
-  },
-  {
-    /* MOD_FF_REG_5 */
-    { "Jjmp{T|}", { indirEp } },
-  },
-  {
     /* MOD_0F01_REG_0 */
     { X86_64_TABLE (X86_64_0F01_REG_0) },
     { RM_TABLE (RM_0F01_REG_0) },
@@ -12645,7 +12635,7 @@ print_insn (bfd_vma pc, disassemble_info *info)
     }
 
   /* Check if the REX prefix is used.  */
-  if (rex_ignored == 0 && (rex ^ rex_used) == 0 && last_rex_prefix >= 0)
+  if (rex_ignored == 0 && (rex ^ rex_used) == 0)
     all_prefixes[last_rex_prefix] = 0;
 
   /* Check if the SEG prefix is used.  */
@@ -14206,10 +14196,12 @@ OP_E_memory (int bytemode, int sizeflag)
       switch (bytemode)
 	{
 	case vex_vsib_d_w_dq_mode:
-	case vex_vsib_q_w_dq_mode:
 	case evex_x_gscat_mode:
 	case xmm_mdq_mode:
 	  shift = vex.w ? 3 : 2;
+	  break;
+	case vex_vsib_q_w_dq_mode:
+	  shift = 3;
 	  break;
 	case x_mode:
 	case evex_half_bcst_xmmq_mode:

@@ -622,6 +622,11 @@ disassemble_init_for_target (struct disassemble_info * info)
 	}
       break;
 #endif
+#ifdef ARCH_nds32
+    case bfd_arch_nds32:
+      info->symbol_is_valid = nds32_symbol_is_valid;
+      break;
+#endif
 #ifdef ARCH_powerpc
     case bfd_arch_powerpc:
 #endif
