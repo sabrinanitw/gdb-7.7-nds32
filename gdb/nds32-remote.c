@@ -499,45 +499,10 @@ nds32_reset_perfmeter_command (char *args, int from_tty)
 	     args == NULL ? "cpu" : args);
   target_rcmd (cmd, gdb_stdtarg);
 }
-
-/* Callback for "nds32 read_copdesc" command.  */
-
-void
-nds32_read_copdesc_command (char *args, int from_tty)
+
+static void
+nds32_handle_aie(char *args, FILE *fptr)
 {
-  char *copdesc = NULL;
-  FILE *fptr = NULL;
-  int cpid;
-
-  for (cpid = 0; cpid < 4; cpid++)
-    {
-      char cop_aie[16];
-
-      sprintf (cop_aie, "cop%d.aie", cpid);
-      copdesc = target_read_stralloc (&current_target,
-				      TARGET_OBJECT_AVAILABLE_FEATURES,
-				      cop_aie);
-
-      if (copdesc)
-	break;
-    }
-
-  if (copdesc == NULL)
-    {
-      error (_("Fail to retrive coprocessor description file."));
-      return;
-    }
-
-  /* fptr = tmpfile (); */
-  fptr = fopen ("target.aie", "w+");
-  if (fptr == NULL)
-    {
-      error (_("AIE internal error, ignore AIE support"));
-      return;
-    }
-
-  fprintf (fptr, "%s", copdesc);
-  fflush (fptr);
   fseek (fptr, 0, SEEK_SET);
   nds32_aie_scanner_in = fptr;
 
@@ -577,13 +542,128 @@ nds32_read_copdesc_command (char *args, int from_tty)
 	}
     }
 
-  /* Parsing successfully.  */
-  fclose (nds32_aie_scanner_in);
 #ifdef DEBUG_AIE_PARSER
   dump_aie_state ();
 #endif
+}
+
+static void
+nds32_read_copdesc_for_openocd (char *args, int from_tty)
+{
+  struct cleanup *back_to;
+  struct ui_file *res;
+  struct ui_file_buffer ui_buf;
+  volatile struct gdb_exception except;
+  int len, cpid;
+
+  /* ui_file for qRcmd.  */
+  res = mem_fileopen ();
+  back_to = make_cleanup_ui_file_delete (res);
+
+  /* ui_file_buffer for reading ui_file.  */
+  ui_buf.buf_size = 2048;
+  ui_buf.buf = xmalloc (ui_buf.buf_size);
+  make_cleanup (free_current_contents, &ui_buf.buf);
+
+  for (cpid = 0; cpid < 4; cpid++)
+    {
+      char qrcmd[13];
+      sprintf (qrcmd, "nds aie cop%d", cpid);
+
+      /* make_cleanup outside TRY_CACHE,
+	 because it save and reset cleanup-chain.  */
+      make_cleanup_restore_ui_file (&gdb_stdtarg);
+      /* Supress error messages from gdbserver
+	 if gdbserver doesn't support the monitor command.  */
+      gdb_stdtarg = res;
+
+      TRY_CATCH (except, RETURN_MASK_ERROR)
+	{
+	  target_rcmd (qrcmd, res);
+	}
+      if (except.reason < 0)
+	goto out;
+
+      /* Read data in ui_file.  */
+      memset (ui_buf.buf, 0, ui_buf.buf_size);
+      ui_file_put (res, do_ui_file_put_memcpy, &ui_buf);
+
+      /* Trim trailing newline characters.  */
+      len = strlen ((char *) ui_buf.buf);
+      while (isspace (ui_buf.buf[len - 1]) && len > 0)
+	len--;
+      ui_buf.buf[len] = '\0';
+
+      if (strcmp (ui_buf.buf, "AIE_ERROR") != 0)
+	{
+	  remote_file_get (ui_buf.buf, "target.aie", from_tty);
+	  fptr = fopen ("target.aie", "r");
+	  nds32_handle_aie (args, fptr);
+	  fclose(fptr);
+	  /* Only support one aie file now. */
+	  break;
+	}
+    }
+out:
+  do_cleanups (back_to);
+}
+
+static void
+nds32_read_copdesc_for_iceman (char *args, int from_tty)
+{
+  char *copdesc = NULL;
+  FILE *fptr = NULL;
+  int cpid;
+
+  for (cpid = 0; cpid < 4; cpid++)
+    {
+      char cop_aie[16];
+
+      sprintf (cop_aie, "cop%d.aie", cpid);
+      copdesc = target_read_stralloc (&current_target,
+				      TARGET_OBJECT_AVAILABLE_FEATURES,
+				      cop_aie);
+
+      if (copdesc)
+	break;
+    }
+
+  if (copdesc == NULL)
+    {
+      error (_("Fail to retrive coprocessor description file."));
+      return;
+    }
+
+  /* fptr = tmpfile (); */
+  fptr = fopen ("target.aie", "w+");
+  if (fptr == NULL)
+    {
+      error (_("AIE internal error, ignore AIE support"));
+      return;
+    }
+
+  fprintf (fptr, "%s", copdesc);
+  fflush (fptr);
+  nds32_handle_aie (args, fptr);
+  fclose(fptr);
   xfree (copdesc);
 }
+
+/* Callback for "nds32 read_copdesc" command.  */
+
+static void
+nds32_read_copdesc_command (char *args, int from_tty)
+{
+  if (nds32_remote_info.type == nds32_rt_ocd)
+    {
+      nds32_read_copdesc_for_openocd (args, from_tty);
+    }
+  else
+    {
+      nds32_read_copdesc_for_iceman (args, from_tty);
+    }
+}
+
 
 static void
 nds32_remote_info_init (void)
