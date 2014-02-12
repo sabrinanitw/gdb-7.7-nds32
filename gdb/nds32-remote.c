@@ -40,6 +40,8 @@
 
 #include "nds32-tdep.h"
 #include "nds32-elf.h"
+#include "opcodes/nds32-aie.h"
+#include "opcodes/nds32-aie-utils.h"
 void nds32_init_remote_cmds (void);
 
 
@@ -495,6 +497,91 @@ nds32_reset_perfmeter_command (char *args, int from_tty)
   xsnprintf (cmd, sizeof (cmd), "set %s perf-meter reset",
 	     args == NULL ? "cpu" : args);
   target_rcmd (cmd, gdb_stdtarg);
+}
+
+/* Callback for "nds32 read_copdesc" command.  */
+
+void
+nds32_read_copdesc_command (char *args, int from_tty)
+{
+  char *copdesc = NULL;
+  FILE *fptr = NULL;
+  int cpid;
+
+  for (cpid = 0; cpid < 4; cpid++)
+    {
+      char cop_aie[16];
+
+      sprintf (cop_aie, "cop%d.aie", cpid);
+      copdesc = target_read_stralloc (&current_target,
+				      TARGET_OBJECT_AVAILABLE_FEATURES,
+				      cop_aie);
+
+      if (copdesc)
+	break;
+    }
+
+  if (copdesc == NULL)
+    {
+      error (_("Fail to retrive coprocessor description file."));
+      return;
+    }
+
+  /* fptr = tmpfile (); */
+  fptr = fopen ("target.aie", "w+");
+  if (fptr == NULL)
+    {
+      error (_("AIE internal error, ignore AIE support"));
+      return;
+    }
+
+  fprintf (fptr, "%s", copdesc);
+  fflush (fptr);
+  fseek (fptr, 0, SEEK_SET);
+  nds32_aie_scanner_in = fptr;
+
+  /* Set restart */
+  aie_reset ();
+  aie_reset_list ();
+
+  init_aie_cop (&cop);
+
+  /* Set to normal state.  */
+  SET_PSTAT (aie_normal);
+  SET_SSTAT (aie_normal);
+  SET_TSTAT (aie_normal);
+
+  nds32_aie_parse ();
+
+  if (aie_error == GET_PSTAT () || aie_error == GET_TSTAT ()
+      || aie_error == GET_SSTAT ())
+    {
+      error (_("Parse %s error, ignoring Andes Copilot mata file support\n"),
+	     args);
+      SET_PSTAT (aie_error);
+      SET_SSTAT (aie_error);
+      SET_TSTAT (aie_error);
+    }
+  else
+    {
+      /* Chain according to instruction group.  */
+      if (!install_objd_list ())
+	{
+	  error (_
+		 ("Internal chain classify error, ignore Andes Copilot "
+		  "mata file support\n"));
+	  SET_PSTAT (aie_error);
+	  SET_SSTAT (aie_error);
+	  SET_TSTAT (aie_error);
+	}
+    }
+
+  /* Parsing successfully.  */
+  fclose (nds32_aie_scanner_in);
+#ifdef DEBUG_AIE_PARSER
+  dump_aie_state ();
+#endif
+  xfree (copdesc);
 }
 
 static void
@@ -978,6 +1065,11 @@ nds32_init_remote_cmds (void)
 	   _("Query profiling results."), &nds32_reset_cmdlist);
   add_cmd ("perf-meter", no_class, nds32_reset_perfmeter_command,
 	   _("Query perf-meter results."), &nds32_reset_cmdlist);
+
+  /* nds32 read_copdesc  */
+  add_cmd ("read_copdesc", no_class, nds32_read_copdesc_command,
+	    _("Request the coprocessor description file from remote."),
+	    &nds32_cmdlist);
 
   create_internalvar_type_lazy ("_nds32_target_type", &nds32_target_type_funcs,
 				NULL);

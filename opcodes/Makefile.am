@@ -208,6 +208,10 @@ TARGET_LIBOPCODES_CFILES = \
 	mt-opc.c \
 	nds32-asm.c \
 	nds32-dis.c \
+	nds32-aie.c \
+	nds32-aie-eval.c \
+	nds32-aie-scanner.c \
+	nds32-aie-parser.c \
 	nios2-dis.c \
 	nios2-opc.c \
 	ns32k-dis.c \
