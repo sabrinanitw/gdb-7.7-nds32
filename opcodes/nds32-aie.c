@@ -43,6 +43,8 @@ unsigned int eval_uint;
 char eval_token[MAX_STR_CONST];
 char eval_syntax_line[MAX_SCAN_LINE_SIZE];
 
+inline void print_allow_customized_ifield (aie_insn_unit * insn);
+
 /* Privated aie scanner line info and is used as indication in user defined configuration file */
 static unsigned int aie_scanner_line_num = 0;
 #define SLINE aie_scanner_line_num
@@ -355,43 +357,43 @@ aie_endian_convertion (int endian, char *reg_image)
 
 /* nds32_aie_pipeline.c */
 int
-init_aie_cop (aie_cop ** cop)
+init_aie_cop (aie_cop **this_cop)
 {
-  if (!*cop)
+  if (*this_cop)
     {
-      free (*cop);
+      free (*this_cop);
     }
 
   //new
-  (*cop) = (aie_cop *) aie_malloc (sizeof (aie_cop));
+  (*this_cop) = (aie_cop *) aie_malloc (sizeof (aie_cop));
 
   //Set default cpid to 1 due to 0 is andes fpu by default
-  (*cop)->cpid = 1;
-  (*cop)->cpid_str[0] = 'c';
-  (*cop)->cpid_str[1] = 'p';
-  (*cop)->cpid_str[2] = '1';
-  (*cop)->cpid_str[3] = '\0';
+  (*this_cop)->cpid = 1;
+  (*this_cop)->cpid_str[0] = 'c';
+  (*this_cop)->cpid_str[1] = 'p';
+  (*this_cop)->cpid_str[2] = '1';
+  (*this_cop)->cpid_str[3] = '\0';
 
-  (*cop)->stage_num = 0;
-  (*cop)->stage_nemonic_list = NULL;
-  (*cop)->etrap = NULL;
-  (*cop)->ltrap = NULL;
-  (*cop)->d2m = NULL;
-  (*cop)->d2c = NULL;
+  (*this_cop)->stage_num = 0;
+  (*this_cop)->stage_nemonic_list = NULL;
+  (*this_cop)->etrap = NULL;
+  (*this_cop)->ltrap = NULL;
+  (*this_cop)->d2m = NULL;
+  (*this_cop)->d2c = NULL;
 
-  (*cop)->is_def_cpid = 0;
-  (*cop)->is_def_d2m = 0;
-  (*cop)->is_def_d2c = 0;
-  (*cop)->is_def_etrap = 0;
-  (*cop)->is_def_ltrap = 0;
-  (*cop)->is_def_stage = 0;
+  (*this_cop)->is_def_cpid = 0;
+  (*this_cop)->is_def_d2m = 0;
+  (*this_cop)->is_def_d2c = 0;
+  (*this_cop)->is_def_etrap = 0;
+  (*this_cop)->is_def_ltrap = 0;
+  (*this_cop)->is_def_stage = 0;
 
-  (*cop)->can_be_redef_cpid = 0;
-  (*cop)->can_be_redef_d2m = 0;
-  (*cop)->can_be_redef_d2c = 0;
-  (*cop)->can_be_redef_etrap = 0;
-  (*cop)->can_be_redef_ltrap = 0;
-  (*cop)->can_be_redef_stage = 0;
+  (*this_cop)->can_be_redef_cpid = 0;
+  (*this_cop)->can_be_redef_d2m = 0;
+  (*this_cop)->can_be_redef_d2c = 0;
+  (*this_cop)->can_be_redef_etrap = 0;
+  (*this_cop)->can_be_redef_ltrap = 0;
+  (*this_cop)->can_be_redef_stage = 0;
 
   return 1;
 }
@@ -426,9 +428,9 @@ init_aie_pipe (aie_pipe ** pipe)
 }
 
 int
-is_cop_null (aie_cop * cop)
+is_cop_null (aie_cop *this_cop)
 {
-  if (NULL == cop)
+  if (NULL == this_cop)
     {
       AIE_PPRINT (aie_error,
 		  "AIE internal failure due to NULL of coprocessor pipeline stage pointer");
@@ -439,16 +441,16 @@ is_cop_null (aie_cop * cop)
 }
 
 stage_nemonic *
-is_exist_stage (aie_cop * cop, char *stage)
+is_exist_stage (aie_cop *this_cop, char *stage)
 {
   stage_nemonic *is_found = NULL;
-  if (!cop || !cop->stage_nemonic_list)
+  if (!this_cop || !this_cop->stage_nemonic_list)
     {
       return is_found;
     }
   else
     {
-      is_found = cop->stage_nemonic_list;
+      is_found = this_cop->stage_nemonic_list;
       while (is_found)
 	{
 	  if (0 == strcmp (is_found->nemonic, stage))
@@ -460,11 +462,11 @@ is_exist_stage (aie_cop * cop, char *stage)
 }
 
 int
-add_cop_cpid (aie_cop * cop, unsigned int cpid)
+add_cop_cpid (aie_cop * this_cop, unsigned int cpid)
 {
-  if (is_cop_null (cop))
+  if (is_cop_null (this_cop))
     return 0;
-  if (!cop->is_def_cpid || cop->can_be_redef_cpid)
+  if (!this_cop->is_def_cpid || this_cop->can_be_redef_cpid)
     {
       if (0 != cpid && 1 != cpid && 2 != cpid && 3 != cpid)
 	{
@@ -472,9 +474,9 @@ add_cop_cpid (aie_cop * cop, unsigned int cpid)
 	  return 0;
 	}
 
-      sprintf (cop->cpid_str, "cp%d", cpid);
-      cop->cpid = cpid;
-      cop->is_def_cpid = 1;
+      sprintf (this_cop->cpid_str, "cp%d", cpid);
+      this_cop->cpid = cpid;
+      this_cop->is_def_cpid = 1;
     }
   else
     {
@@ -485,28 +487,28 @@ add_cop_cpid (aie_cop * cop, unsigned int cpid)
 }
 
 int
-add_cop_etrap (aie_cop * cop, char *stage)
+add_cop_etrap (aie_cop *this_cop, char *stage)
 {
-  if (is_cop_null (cop))
+  if (is_cop_null (this_cop))
     return 0;
 
-  if (!cop->is_def_etrap || cop->can_be_redef_etrap)
+  if (!this_cop->is_def_etrap || this_cop->can_be_redef_etrap)
     {
-      stage_nemonic *s = is_exist_stage (cop, stage);
+      stage_nemonic *s = is_exist_stage (this_cop, stage);
       if (!s)
 	{
 	  AIE_PPRINT (aie_error, "used before define stage `%s'", stage);
 	  return 0;
 	}
 
-      if (cop->is_def_ltrap && cop->ltrap->stage >= s->stage)
+      if (this_cop->is_def_ltrap && this_cop->ltrap->stage >= s->stage)
 	{
 	  AIE_PPRINT (aie_error, "Only support scenario of etrap > ltrap");
 	  return 0;
 	}
 
-      cop->etrap = s;
-      cop->is_def_etrap = 1;
+      this_cop->etrap = s;
+      this_cop->is_def_etrap = 1;
     }
   else
     {
@@ -517,28 +519,28 @@ add_cop_etrap (aie_cop * cop, char *stage)
 }
 
 int
-add_cop_ltrap (aie_cop * cop, char *stage)
+add_cop_ltrap (aie_cop *this_cop, char *stage)
 {
-  if (is_cop_null (cop))
+  if (is_cop_null (this_cop))
     return 0;
 
-  if (!cop->is_def_ltrap || cop->can_be_redef_ltrap)
+  if (!this_cop->is_def_ltrap || this_cop->can_be_redef_ltrap)
     {
-      stage_nemonic *s = is_exist_stage (cop, stage);
+      stage_nemonic *s = is_exist_stage (this_cop, stage);
       if (!s)
 	{
 	  AIE_PPRINT (aie_error, "used before define stage `%s'", stage);
 	  return 0;
 	}
 
-      if (cop->is_def_etrap && s->stage <= cop->etrap->stage)
+      if (this_cop->is_def_etrap && s->stage <= this_cop->etrap->stage)
 	{
 	  AIE_PPRINT (aie_error, "Only support scenario of etrap > ltrap");
 	  return 0;
 	}
 
-      cop->ltrap = s;
-      cop->is_def_ltrap = 1;
+      this_cop->ltrap = s;
+      this_cop->is_def_ltrap = 1;
     }
   else
     {
@@ -549,21 +551,21 @@ add_cop_ltrap (aie_cop * cop, char *stage)
 }
 
 int
-add_cop_d2c (aie_cop * cop, char *stage)
+add_cop_d2c (aie_cop *this_cop, char *stage)
 {
-  if (is_cop_null (cop))
+  if (is_cop_null (this_cop))
     return 0;
 
-  if (!cop->is_def_d2c || cop->can_be_redef_d2c)
+  if (!this_cop->is_def_d2c || this_cop->can_be_redef_d2c)
     {
-      stage_nemonic *s = is_exist_stage (cop, stage);
+      stage_nemonic *s = is_exist_stage (this_cop, stage);
       if (!s)
 	{
 	  AIE_PPRINT (aie_error, "used before define stage `%s'", stage);
 	  return 0;
 	}
-      cop->d2c = s;
-      cop->is_def_d2c = 1;
+      this_cop->d2c = s;
+      this_cop->is_def_d2c = 1;
     }
   else
     {
@@ -574,21 +576,21 @@ add_cop_d2c (aie_cop * cop, char *stage)
 }
 
 int
-add_cop_d2m (aie_cop * cop, char *stage)
+add_cop_d2m (aie_cop *this_cop, char *stage)
 {
-  if (is_cop_null (cop))
+  if (is_cop_null (this_cop))
     return 0;
 
-  if (!cop->is_def_d2m || cop->can_be_redef_d2m)
+  if (!this_cop->is_def_d2m || this_cop->can_be_redef_d2m)
     {
-      stage_nemonic *s = is_exist_stage (cop, stage);
+      stage_nemonic *s = is_exist_stage (this_cop, stage);
       if (!s)
 	{
 	  AIE_PPRINT (aie_error, "used before define stage `%s'", stage);
 	  return 0;
 	}
-      cop->d2m = s;
-      cop->is_def_d2m = 1;
+      this_cop->d2m = s;
+      this_cop->is_def_d2m = 1;
     }
   else
     {
@@ -599,17 +601,17 @@ add_cop_d2m (aie_cop * cop, char *stage)
 }
 
 int
-add_cop_stage (aie_cop * cop, char *stage)
+add_cop_stage (aie_cop *this_cop, char *stage)
 {
   //new and reset
   stage_nemonic *s = (stage_nemonic *) aie_malloc (sizeof (stage_nemonic));
-  if (!cop->stage_nemonic_list)
+  if (!this_cop->stage_nemonic_list)
     {
-      cop->stage_nemonic_list = s;
+      this_cop->stage_nemonic_list = s;
     }
   else
     {
-      stage_nemonic *it = cop->stage_nemonic_list;
+      stage_nemonic *it = this_cop->stage_nemonic_list;
       while (it)
 	{
 	  if (0 == strcmp (it->nemonic, stage))
@@ -630,7 +632,7 @@ add_cop_stage (aie_cop * cop, char *stage)
     {
       return 0;
     }
-  s->stage = ((++cop->stage_num));
+  s->stage = ((++this_cop->stage_num));
   s->n = NULL;
   return 1;
 }
@@ -889,57 +891,57 @@ init_pseudo_reg_mapping (pseudo_reg_mapping * pseudo_map)
 
 /* expanse nds32_aie_stackop.c here! */
 /* nds32_aie_stackop.c" */
-static int value_idx = 0;
-static int operator_idx = 0;
-static stackop_token value[MAX_STR_CONST];
-static stackop_token operator[MAX_STR_CONST];
+static int stackop_val_idx = 0;
+static int stackop_op_idx = 0;
+static stackop_token stackop_val[MAX_STR_CONST];
+static stackop_token stackop_op[MAX_STR_CONST];
 
 static inline void
 reset_stack (void)
 {
-  value_idx = 0;
-  operator_idx = 0;
+  stackop_val_idx = 0;
+  stackop_op_idx = 0;
 }
 
 static inline void
 pushV (int digit)
 {
-  value[value_idx].digit = digit;
-  value[value_idx].type = STACKOP_DIGIT;
-  value_idx++;
+  stackop_val[stackop_val_idx].digit = digit;
+  stackop_val[stackop_val_idx].type = STACKOP_DIGIT;
+  stackop_val_idx++;
 }
 
 static inline void
 pushO (stackop_token_type type)
 {
-  operator[operator_idx].type = type;
-  operator_idx++;
+  stackop_op[stackop_op_idx].type = type;
+  stackop_op_idx++;
 }
 
 static inline int
 popV (void)
 {
-  value_idx--;
-  return value[value_idx].digit;
+  stackop_val_idx--;
+  return stackop_val[stackop_val_idx].digit;
 }
 
 static inline stackop_token_type
 popO (void)
 {
-  operator_idx--;
-  return operator[operator_idx].type;
+  stackop_op_idx--;
+  return stackop_op[stackop_op_idx].type;
 }
 
 static inline stackop_token_type
 topO (void)
 {
-  return operator[operator_idx - 1].type;
+  return stackop_op[stackop_op_idx - 1].type;
 }
 
 static inline stackop_token_type
 topm1O (void)
 {
-  return operator[operator_idx - 2].type;
+  return stackop_op[stackop_op_idx - 2].type;
 }
 
 static inline int
@@ -952,7 +954,7 @@ getidx (stackop_token * list, int idx)
 
   int return_idx = 0;
 
-  while (it || operator_idx)
+  while (it || stackop_op_idx)
     {
 
       switch (type)
@@ -974,17 +976,17 @@ getidx (stackop_token * list, int idx)
 	  if (STACKOP_MUL == topO ())
 	    {
 	      return_idx =
-		value[value_idx - 2].digit * value[value_idx - 1].digit;
-	      value_idx -= 2;
-	      operator_idx -= 1;
+		stackop_val[stackop_val_idx - 2].digit * stackop_val[stackop_val_idx - 1].digit;
+	      stackop_val_idx -= 2;
+	      stackop_op_idx -= 1;
 	      pushV (return_idx);
 	    }
 	  else if (STACKOP_DIV == topO ())
 	    {
 	      return_idx =
-		value[value_idx - 2].digit / value[value_idx - 1].digit;
-	      value_idx -= 2;
-	      operator_idx -= 1;
+		stackop_val[stackop_val_idx - 2].digit / stackop_val[stackop_val_idx - 1].digit;
+	      stackop_val_idx -= 2;
+	      stackop_op_idx -= 1;
 	      pushV (return_idx);
 	    }
 
@@ -999,33 +1001,33 @@ getidx (stackop_token * list, int idx)
 	  if (STACKOP_POSTIVE == topO ())
 	    {
 	      return_idx =
-		value[value_idx - 2].digit + value[value_idx - 1].digit;
-	      value_idx -= 2;
-	      operator_idx -= 1;
+		stackop_val[stackop_val_idx - 2].digit + stackop_val[stackop_val_idx - 1].digit;
+	      stackop_val_idx -= 2;
+	      stackop_op_idx -= 1;
 	      pushV (return_idx);
 	    }
 	  else if (STACKOP_NEGATIVE == topO ())
 	    {
 	      return_idx =
-		value[value_idx - 2].digit - value[value_idx - 1].digit;
-	      value_idx -= 2;
-	      operator_idx -= 1;
+		stackop_val[stackop_val_idx - 2].digit - stackop_val[stackop_val_idx - 1].digit;
+	      stackop_val_idx -= 2;
+	      stackop_op_idx -= 1;
 	      pushV (return_idx);
 	    }
 	  else if (STACKOP_MUL == topO ())
 	    {
 	      return_idx =
-		value[value_idx - 2].digit * value[value_idx - 1].digit;
-	      value_idx -= 2;
-	      operator_idx -= 1;
+		stackop_val[stackop_val_idx - 2].digit * stackop_val[stackop_val_idx - 1].digit;
+	      stackop_val_idx -= 2;
+	      stackop_op_idx -= 1;
 	      pushV (return_idx);
 	    }
 	  else if (STACKOP_DIV == topO ())
 	    {
 	      return_idx =
-		value[value_idx - 2].digit / value[value_idx - 1].digit;
-	      value_idx -= 2;
-	      operator_idx -= 1;
+		stackop_val[stackop_val_idx - 2].digit / stackop_val[stackop_val_idx - 1].digit;
+	      stackop_val_idx -= 2;
+	      stackop_op_idx -= 1;
 	      pushV (return_idx);
 	    }
 	  else if (STACKOP_RPAREN == topO ())
@@ -1194,14 +1196,14 @@ is_insn_null (aie_insn_unit * insn)
 
 static inline int
 chain_classify (aie_insn_unit ** sub_head, aie_insn_unit ** sub_tail,
-		group group)
+		group g)
 {
   //set up global head
   aie_insn_unit *it = aie_insn_list_head;
 
   while (NULL != it)
     {
-      if (it->insn_group == group)
+      if (it->insn_group == g)
 	{
 
 	  if (NULL == (*sub_head))
@@ -2370,13 +2372,13 @@ check_aie_register_rd_wr_insn (void)
 
   // Check rd_insn and wr_insn for registers
   reg = aie_register_list_head;
+  insn = aie_insn_list_head;
   while (NULL != reg)
     {
       // rd_insn is assigned to register.
       if (reg->is_def_rd_insn)
 	{
 	  // check if rd insn is declared or not
-	  insn = aie_insn_list_head;
 	  found = 0;
 	  while ((NULL != insn) && !found)
 	    {
@@ -2393,7 +2395,9 @@ check_aie_register_rd_wr_insn (void)
 	      return 0;
 	    }
 	  else
-	    reg->rd_insn_unit = insn;
+	    {
+	      reg->rd_insn_unit = insn;
+	    }
 	}
 
       // wr_insn is assigned to register.
@@ -2992,6 +2996,7 @@ debug_stackop_token (stackop_token * it, char *buf)
 //For global coprocessor config
 int
 aie_get_stage_num (aie_cop * insn)
+//			     ^^^^ bug ???  Sign. I don't want to touch it now.
 {
   if (!insn)
     return -1;
@@ -2999,35 +3004,35 @@ aie_get_stage_num (aie_cop * insn)
 }
 
 int
-aie_get_early_trap_ack (aie_cop * cop)
+aie_get_early_trap_ack (aie_cop * this_cop)
 {
-  if (!cop || !cop->etrap)
+  if (!this_cop || !this_cop->etrap)
     return -1;
-  return cop->etrap->stage;
+  return this_cop->etrap->stage;
 }
 
 int
-aie_get_late_trap_ack (aie_cop * cop)
+aie_get_late_trap_ack (aie_cop * this_cop)
 {
-  if (!cop || !cop->ltrap)
+  if (!this_cop || !this_cop->ltrap)
     return -1;
-  return cop->ltrap->stage;
+  return this_cop->ltrap->stage;
 }
 
 int
-aie_get_d2m (aie_cop * cop)
+aie_get_d2m (aie_cop * this_cop)
 {
-  if (!cop || !cop->d2m)
+  if (!this_cop || !this_cop->d2m)
     return -1;
-  return cop->d2m->stage;
+  return this_cop->d2m->stage;
 }
 
 int
-aie_get_d2c (aie_cop * cop)
+aie_get_d2c (aie_cop * this_cop)
 {
-  if (!cop || !cop->d2c)
+  if (!this_cop || !this_cop->d2c)
     return -1;
-  return cop->d2c->stage;
+  return this_cop->d2c->stage;
 }
 
 //For instruction based
@@ -3263,33 +3268,33 @@ aie_get_sub_reg_idx (aie_register * reg, int seq, int idx)
 }
 
 int
-aie_set_stage_num (aie_cop * cop, int num)
+aie_set_stage_num (aie_cop *this_cop, int num)
 {
-  if (!cop || num <= 0)
+  if (!this_cop || num <= 0)
     return 0;
-  cop->stage_num = num;
+  this_cop->stage_num = num;
   return 1;
 }
 
 int
-aie_set_early_trap_ack (aie_cop * cop, int etrap)
+aie_set_early_trap_ack (aie_cop *this_cop, int etrap)
 {
-  if (!cop || etrap <= 0)
+  if (!this_cop || etrap <= 0)
     return 0;
-  if (etrap >= cop->ltrap->stage)
+  if (etrap >= this_cop->ltrap->stage)
     return 0;
-  cop->etrap->stage = etrap;
+  this_cop->etrap->stage = etrap;
   return 1;
 }
 
 int
-aie_set_late_trap_ack (aie_cop * cop, int ltrap)
+aie_set_late_trap_ack (aie_cop *this_cop, int ltrap)
 {
-  if (!cop || ltrap <= 0)
+  if (!this_cop || ltrap <= 0)
     return 0;
-  if (ltrap <= cop->ltrap->stage)
+  if (ltrap <= this_cop->ltrap->stage)
     return 0;
-  cop->ltrap->stage = ltrap;
+  this_cop->ltrap->stage = ltrap;
   return 1;
 }
 
@@ -3727,9 +3732,9 @@ look_up_symbol_value_map_list (aie_stoken * syntax_token, char *symbol)
 }
 
 static inline int
-step_until_and_look_up_sym_val_map_unit (aie_insn_unit * it,
-					 aie_stoken ** stok,
-					 aie_stoken ** mad_stok,
+step_until_and_look_up_sym_val_map_unit (aie_insn_unit *it __attribute__ ((__unused__)),
+					 aie_stoken **stok,
+					 aie_stoken **mad_stok,
 					 char terminal)
 {
 
@@ -3780,7 +3785,6 @@ match_insn_syntax (aie_insn_unit * it)
 {
 
   aie_stoken *stok = it->aie_stoken_list_head;
-  aie_stoken *stok2 = it->aie_stoken_list_head;
 
   //global list
   aie_stoken *mad_stok = mad_s_head;
@@ -4327,7 +4331,7 @@ match_ifield (aie_insn_unit * list_head, unsigned int imm)
 }
 
 int
-nds32_aie_dislator (unsigned int immediate, char *aie_insn, unsigned int cpid, group g)
+nds32_aie_dislator (unsigned int immediate, char *aie_insn, unsigned int cpid __attribute__ ((__unused__)), group g)
 {
 
   //Fail due to parse command line/config file error
@@ -4335,12 +4339,10 @@ nds32_aie_dislator (unsigned int immediate, char *aie_insn, unsigned int cpid, g
     return 0;
 
   aie_insn_unit *list_head = NULL;
-  aie_insn_unit *list_tail = NULL;
 
   aie_insn[0] = '\0';
 
   list_head = objd_list[g].head;
-  list_tail = objd_list[g].tail;
 
   int found = 0;
   while (NULL != list_head)
