@@ -27,6 +27,8 @@ token_type nds32_aie_eval_lex(void);
 %x HEX
 
 %option noyywrap
+%option nounput
+%option noinput
 
 
 

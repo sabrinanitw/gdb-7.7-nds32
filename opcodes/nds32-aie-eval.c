@@ -1,6 +1,5 @@
-#line 2 "nds32-aie-eval.c"
 
-#line 4 "nds32-aie-eval.c"
+#line 3 "nds32_aie_eval.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -495,11 +494,11 @@ int nds32_aie_eval__flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *nds32_aie_eval_text;
-#line 1 "nds32-aie-eval.l"
+#line 1 "nds32_aie_eval.l"
 /*
     Andes Coprocessor Extension Language Syntax for GNU Flex
 */
-#line 5 "nds32-aie-eval.l"
+#line 5 "nds32_aie_eval.l"
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -522,7 +521,8 @@ token_type nds32_aie_eval_lex(void);
 #define YY_DECL token_type nds32_aie_eval_lex ()
 
 
-#line 526 "nds32-aie-eval.c"
+#define YY_NO_INPUT 1
+#line 526 "nds32_aie_eval.c"
 
 #define INITIAL 0
 #define HEX 1
@@ -582,8 +582,6 @@ extern int nds32_aie_eval_wrap (void );
 #endif
 #endif
 
-    static void yyunput (int c,char *buf_ptr  );
-    
 #ifndef yytext_ptr
 static void yy_flex_strncpy (char *,yyconst char *,int );
 #endif
@@ -710,7 +708,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 33 "nds32-aie-eval.l"
+#line 35 "nds32_aie_eval.l"
 
 
  /********************************************/
@@ -718,7 +716,7 @@ YY_DECL
  /********************************************/
 
 
-#line 722 "nds32-aie-eval.c"
+#line 720 "nds32_aie_eval.c"
 
 	if ( !(yy_init) )
 		{
@@ -803,7 +801,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 40 "nds32-aie-eval.l"
+#line 42 "nds32_aie_eval.l"
 {
 
     /* we should skip first "%" */
@@ -816,7 +814,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 50 "nds32-aie-eval.l"
+#line 52 "nds32_aie_eval.l"
 {
     if (!aie_strcpy(eval_token, nds32_aie_eval_text)) {
         return ERROR;
@@ -827,7 +825,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 58 "nds32-aie-eval.l"
+#line 60 "nds32_aie_eval.l"
 {
     if (!aie_strcpy(eval_token, nds32_aie_eval_text)) {
         return ERROR;
@@ -840,14 +838,14 @@ YY_RULE_SETUP
 /********************************************/
 case 4:
 YY_RULE_SETUP
-#line 69 "nds32-aie-eval.l"
+#line 71 "nds32_aie_eval.l"
 {
     return EOL;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 73 "nds32-aie-eval.l"
+#line 75 "nds32_aie_eval.l"
 {
     return_state = YY_START;
     BEGIN(HEX);
@@ -855,7 +853,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 78 "nds32-aie-eval.l"
+#line 80 "nds32_aie_eval.l"
 {
     unsigned long int tmp = 0;
 
@@ -876,7 +874,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 96 "nds32-aie-eval.l"
+#line 98 "nds32_aie_eval.l"
 {
     unsigned long int tmp = 0;
     if (!aie_strtoul(nds32_aie_eval_text, 0, &tmp, 0)) {
@@ -894,7 +892,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 111 "nds32-aie-eval.l"
+#line 113 "nds32_aie_eval.l"
 {
     if (!aie_strcpy(eval_token, nds32_aie_eval_text)) {
         return ERROR;
@@ -904,7 +902,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 118 "nds32-aie-eval.l"
+#line 120 "nds32_aie_eval.l"
 {
     if (!aie_strcpy(eval_token, nds32_aie_eval_text)) {
         return ERROR;
@@ -914,7 +912,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 125 "nds32-aie-eval.l"
+#line 127 "nds32_aie_eval.l"
 {
     if (!aie_strcpy(eval_token, nds32_aie_eval_text)) {
         return ERROR;
@@ -924,7 +922,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 133 "nds32-aie-eval.l"
+#line 135 "nds32_aie_eval.l"
 {
     if (!aie_strcpy(eval_token, nds32_aie_eval_text)) {
         return ERROR;
@@ -934,7 +932,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 141 "nds32-aie-eval.l"
+#line 143 "nds32_aie_eval.l"
 {
     if (!aie_strcpy(eval_token, nds32_aie_eval_text)) {
         return ERROR;
@@ -944,10 +942,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 148 "nds32-aie-eval.l"
+#line 150 "nds32_aie_eval.l"
 ECHO;
 	YY_BREAK
-#line 951 "nds32-aie-eval.c"
+#line 949 "nds32_aie_eval.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(HEX):
 	yyterminate();
@@ -1275,43 +1273,6 @@ static int yy_get_next_buffer (void)
 	yy_is_jam = (yy_current_state == 26);
 
 	return yy_is_jam ? 0 : yy_current_state;
-}
-
-    static void yyunput (int c, register char * yy_bp )
-{
-	register char *yy_cp;
-    
-    yy_cp = (yy_c_buf_p);
-
-	/* undo effects of setting up nds32_aie_eval_text */
-	*yy_cp = (yy_hold_char);
-
-	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-		{ /* need to shift things up to make room */
-		/* +2 for EOB chars. */
-		register int number_to_move = (yy_n_chars) + 2;
-		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-		register char *source =
-				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
-
-		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
-			*--dest = *--source;
-
-		yy_cp += (int) (dest - source);
-		yy_bp += (int) (dest - source);
-		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
-
-		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
-		}
-
-	*--yy_cp = (char) c;
-
-	(yytext_ptr) = yy_bp;
-	(yy_hold_char) = *yy_cp;
-	(yy_c_buf_p) = yy_cp;
 }
 
 #ifndef YY_NO_INPUT
@@ -1946,7 +1907,7 @@ void nds32_aie_eval_free (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 148 "nds32-aie-eval.l"
+#line 150 "nds32_aie_eval.l"
 
 
 
