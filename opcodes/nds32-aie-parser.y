@@ -13,10 +13,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "nds32-aie.h"
 #include "nds32-aie-utils.h"
 #include "nds32-aie-typedef-insn.h"
 #define YYERROR_VERBOSE
 
+#ifdef yylex
+  #undef yylex
+#endif
 #define yylex nds32_aie_scanner_lex
 extern int nds32_aie_scanner_lex(void);
 
@@ -32,15 +36,15 @@ pseudo_reg_mapping* pseudo_reg_tmp;
 /* used to construct indivisual instruction */
 aie_insn_unit* itype_tmp = NULL;
 aie_insn_unit* insn_tmp = NULL;
-aie_insn_unit* tmp = NULL;
+aie_insn_unit* gtmp = NULL;
 sym_val_map_unit* sym_val_map_tmp = NULL;
 aie_register* aie_register_tmp = NULL;
 int is_define_pseudo_register_access_macro = 0;
 char additional_string[MAX_STR_CONST] = "\0";
 unsigned int set_common_format = 0;
 unsigned int valid_bits_width = 0;
-unsigned int i = 0;
-unsigned int j = 0;
+unsigned int gi = 0;
+unsigned int gj = 0;
 unsigned int k = 0;
 unsigned int l = 0;
 int offset = 0;
@@ -109,6 +113,7 @@ inline void bits_width_determinate(aie_insn_unit* insn){
 
 extern token_type syntax_scanner(void);
 %}
+
 %union {
  char* text;
  int value;
@@ -227,7 +232,7 @@ extern token_type syntax_scanner(void);
 %type <text> is_valid_id valid_id
 
 /* Non-terminals for ISA */
-%type <text> re_input1 input
+%type <text> re_input re_input1 input
 
 /* Non-terminal for symbol value mapping */
 %type <text> sym_val_struct re_sym_val_exp sym_val_exp additional_str
@@ -272,16 +277,15 @@ extern token_type syntax_scanner(void);
 /*************************************************/
 re_input: /* empty */ { printf("Warning! The aie file is empty!\n"); }
         | re_input1
-		{
-		  if (!check_aie_register_rd_wr_insn()) {
-		    YYERROR;
-		  }
-		};
+        {
+           if (!check_aie_register_rd_wr_insn()) {
+               YYERROR;
+           }
+        };
 
 re_input1: input
-       | re_input1 input;
+	 | re_input1 input;
 
-re_input: re_input input | {};
 input :
     sym_val_struct
     | pipe
@@ -366,40 +370,40 @@ hardware_register_statement:
             YYERROR;
         }
 
-    // Check whether width is defined.
-    if (0 == aie_register_tmp->width) {
-        yyerror("undefined reference to %s.width", aie_register_tmp->symbol);
-        YYERROR;
-    }
+        // Check whether width is defined.
+        if (0 == aie_register_tmp->width) {
+            yyerror("undefined reference to %s.width", aie_register_tmp->symbol);
+            YYERROR;
+        }
 
-    // Check whether regnum is defined.
-    // Check regnum before sym_map.
-    // If regnum is 1 and sym_map is null, the map_unit should be NULL.
-    if (0 == aie_register_tmp->regnum) {
-        yyerror("undefined reference to %s.regnum", aie_register_tmp->symbol);
-        YYERROR;
-    }
+        // Check whether regnum is defined.
+        // Check regnum before sym_map.
+        // If regnum is 1 and sym_map is null, the map_unit should be NULL.
+        if (0 == aie_register_tmp->regnum) {
+            yyerror("undefined reference to %s.regnum", aie_register_tmp->symbol);
+            YYERROR;
+        }
 
-    // If regnum is 1, there is no need to check sym_map and map_unit can be NULL.
-    // Check whether sym_map is defined.
-    if ((aie_register_tmp->regnum > 1) && !aie_register_tmp->map_unit) {
-        yyerror("undefined reference to %s.sym_map", aie_register_tmp->symbol);
-        YYERROR;
-    }
+        // If regnum is 1, there is no need to check sym_map and map_unit can be NULL.
+        // Check whether sym_map is defined.
+        if ((aie_register_tmp->regnum > 1) && !aie_register_tmp->map_unit) {
+            yyerror("undefined reference to %s.sym_map", aie_register_tmp->symbol);
+            YYERROR;
+        }
 
-    // If map_unit is not NULL,
-    // check whether total register number is not equal to total unique mapped value symbo
-    if (aie_register_tmp->map_unit &&
-        (aie_register_tmp->regnum !=
-         (unsigned int)aie_register_tmp->map_unit->total_unique_mapped_value_symbol)) {
-        yyerror("only have %d registers for %d unique mapped value symbol of %s.sym_map.%s",aie_register_tmp->regnum, aie_register_tmp->map_unit->total_unique_mapped_value_symbol,aie_register_tmp->symbol, aie_register_tmp->map_unit->name);
-        YYERROR;
-    }
+        // If map_unit is not NULL,
+        // check whether total register number is not equal to total unique mapped value symbol
+        if (aie_register_tmp->map_unit &&
+            (aie_register_tmp->regnum !=
+             (unsigned int)aie_register_tmp->map_unit->total_unique_mapped_value_symbol)) {
+            yyerror("only have %d registers for %d unique mapped value symbol of %s.sym_map.%s", aie_register_tmp->regnum, aie_register_tmp->map_unit->total_unique_mapped_value_symbol, aie_register_tmp->symbol, aie_register_tmp->map_unit->name);
+            YYERROR;
+        }
 
-};
-
+    };
 
 re_hardware_register_statement: re_hardware_register_statement aie_register_attr | aie_register_attr;
+
 aie_register_attr: register_width | register_num | register_symbol | register_reg_map | register_rd_insn
     | register_wr_insn
     | ID EQ
@@ -444,8 +448,6 @@ register_wr_insn:
             YYERROR;
         }
     };
-
-
 
 register_symbol:
     SYM_MAP EQ is_valid_id
@@ -714,28 +716,28 @@ sym_val_exp:
         if (!aie_strcpy(eval_token, $1))
             YYERROR;
 
-        i = $3;
-        j = $5;
+        gi = $3;
+        gj = $5;
         k = $10;
         l = $12;
 
-        offset = abs(j - i) + 1;
+        offset = abs(gj - gi) + 1;
         if (offset != abs(l - k) + 1) {
             yyerror("mismatched range size between symbols and values");
             YYERROR;
         }
 
         //increment symbol
-        if (j > i) {
+        if (gj > gi) {
             if (l > k) {
                 while(0 != offset) {
                     char tmp[MAX_STR_CONST] = "\0";
 
-                    if (additional_string) {
-                        sprintf(tmp, "%s%d%s", eval_token, i++, additional_string);
+                    if (strlen(additional_string)) {
+                        sprintf(tmp, "%s%d%s", eval_token, gi++, additional_string);
                     }
                     else {
-                        sprintf(tmp,"%s%d",eval_token,i++);
+                        sprintf(tmp,"%s%d",eval_token,gi++);
                     }
 
                     if (!add_sym_val(sym_val_map_tmp, tmp, k++)) {
@@ -748,11 +750,11 @@ sym_val_exp:
             else {
                 while(0 != offset) {
                     char tmp[MAX_STR_CONST] = "\0";
-                    if (additional_string) {
-                        sprintf(tmp, "%s%d%s", eval_token, i++, additional_string);
+                    if (strlen(additional_string)) {
+                        sprintf(tmp, "%s%d%s", eval_token, gi++, additional_string);
                     }
                     else {
-                        sprintf(tmp,"%s%d",eval_token,i++);
+                        sprintf(tmp,"%s%d",eval_token,gi++);
                     }
 
                     if (!add_sym_val(sym_val_map_tmp, tmp, k--)) {
@@ -769,11 +771,11 @@ sym_val_exp:
             if (l > k) {
                 while(0 != offset) {
                     char tmp[MAX_STR_CONST] = "\0";
-                    if (additional_string) {
-                        sprintf(tmp, "%s%d%s", eval_token, i--, additional_string);
+                    if (strlen(additional_string)) {
+                        sprintf(tmp, "%s%d%s", eval_token, gi--, additional_string);
                     }
                     else {
-                        sprintf(tmp,"%s%d",eval_token,i--);
+                        sprintf(tmp,"%s%d",eval_token,gi--);
                     }
 
                     if (!add_sym_val(sym_val_map_tmp, tmp, k++)) {
@@ -786,11 +788,11 @@ sym_val_exp:
             else {
                 while(0 != offset) {
                     char tmp[MAX_STR_CONST] = "\0";
-                    if (additional_string) {
-                        sprintf(tmp, "%s%d%s", eval_token, i--, additional_string);
+                    if (strlen(additional_string)) {
+                        sprintf(tmp, "%s%d%s", eval_token, gi--, additional_string);
                     }
                     else {
-                        sprintf(tmp,"%s%d",eval_token,i--);
+                        sprintf(tmp,"%s%d",eval_token,gi--);
                     }
 
                     if (!add_sym_val(sym_val_map_tmp, tmp, k--)) {
@@ -1056,53 +1058,53 @@ invalid_presentable_insn_attribute_literal:
 aie_insn_format:
     FORMAT EQ LPAREN RPAREN SEMICOLON
     {
-        yyerror("specify trivial `format' in %s", tmp->name);
+        yyerror("specify trivial `format' in %s", gtmp->name);
         YYERROR;
     }
     | FORMAT EQ LPAREN
     {
         //select proper chain to be added (itype chain or sepcific insn chain)
         if (set_common_format)
-            tmp = itype_tmp;
+            gtmp = itype_tmp;
         else
-            tmp = insn_tmp;
+            gtmp = insn_tmp;
 
-        if (tmp->can_be_redef_format) {
+        if (gtmp->can_be_redef_format) {
             //Free memory
             free_ifield(insn_tmp->aie_ifield_list_head);
 
-            tmp->aie_ifield_list_head = NULL;
-            tmp->aie_ifield_list_tail = NULL;
-            tmp->aie_ifield_list_length = 0;
+            gtmp->aie_ifield_list_head = NULL;
+            gtmp->aie_ifield_list_tail = NULL;
+            gtmp->aie_ifield_list_length = 0;
         }
 
-        if (AIE_UNKNOWN == tmp->insn_group) {
-            yyerror("undefined reference to %s.group before specify %s.format",tmp->name, tmp->name);
+        if (AIE_UNKNOWN == gtmp->insn_group) {
+            yyerror("undefined reference to %s.group before specify %s.format",gtmp->name, gtmp->name);
             YYERROR;
         }
 
         //According to instruction group, determinate valid user defined bit widths
-        bits_width_determinate(tmp);
+        bits_width_determinate(gtmp);
 
-        if (tmp->is_def_format && !tmp->can_be_redef_format) {
-            yyerror("redefinition of %s.format",tmp->name);
+        if (gtmp->is_def_format && !gtmp->can_be_redef_format) {
+            yyerror("redefinition of %s.format",gtmp->name);
             YYERROR;
         }
         is_trivial_format = 1;
     } re_insn_format {
 
         if (is_trivial_format) {
-            yyerror("specify trivial `format' in %s", tmp->name);
+            yyerror("specify trivial `format' in %s", gtmp->name);
             YYERROR;
         }
 
-        for (i=0 ; i<=31; i++) {
-            if (tmp->defined_width[i]) {
+        for (gi=0 ; gi<=31; gi++) {
+            if (gtmp->defined_width[gi]) {
                 yyerror("+-----------------------------------------------------------------------+");
                 yyerror("|31    28|27    24|23    20|19    16|15    12|11    08| 7     4| 3     0|");
                 yyerror("+-----------------------------------------------------------------------+");
 
-                switch(tmp->insn_group) {
+                switch(gtmp->insn_group) {
                     case AIE_CPE1:
                     case AIE_CPE2:
                     case AIE_CPE3:
@@ -1126,11 +1128,11 @@ aie_insn_format:
                 }
                 yyerror("^: allowed customized coprocessor instruction bit field");
                 yyerror("");
-                yyerror("bit[%d] is not defined", i);
+                yyerror("bit[%d] is not defined", gi);
                 YYERROR;
             }
         }
-        tmp->is_def_format = 1;
+        gtmp->is_def_format = 1;
     } RPAREN SEMICOLON;
 
 re_insn_format: insn_format format_statement ;
@@ -1143,7 +1145,7 @@ format_statement:
         unsigned int valid_value = 0;
         unsigned int valid = 0;
 
-        if (!add_ifield(tmp, $1, align_type, aie_s, shf_mnt, bit_width, valid_value, valid)) {
+        if (!add_ifield(gtmp, $1, align_type, aie_s, shf_mnt, bit_width, valid_value, valid)) {
             YYERROR;
         }
         is_trivial_format = 0;
@@ -1155,7 +1157,7 @@ format_statement:
         unsigned int valid_value = $1;
         unsigned int valid = 1;
 
-        if (!add_ifield(tmp, NULL, aie_ub, aie_s, shf_mnt, bit_width, valid_value, valid)) {
+        if (!add_ifield(gtmp, NULL, aie_ub, aie_s, shf_mnt, bit_width, valid_value, valid)) {
             YYERROR;
         }
         is_trivial_format = 0;
@@ -1184,7 +1186,7 @@ insn_decode :
     | re_decode_statement RPAREN SEMICOLON
     {
         if (is_trivial_decode) {
-            yyerror("specify trivial `decode' in %s", tmp->name);
+            yyerror("specify trivial `decode' in %s", gtmp->name);
             YYERROR;
         }
     };
@@ -1315,16 +1317,16 @@ aie_insn_group:
     {
         //select proper chain to be added (itype chain or sepcific insn chain)
         if (set_common_format)
-            tmp = itype_tmp;
+            gtmp = itype_tmp;
         else
-            tmp = insn_tmp;
+            gtmp = insn_tmp;
 
         //if ((tmp->is_def_format)) {
         //    yyerror("%s.format should not defined before %s.group",tmp->name, tmp->name);
         //    YYERROR;
         //}
 
-        if (!add_insn_group(tmp, g)) {
+        if (!add_insn_group(gtmp, g)) {
             YYERROR;
         }
     } ;
@@ -1337,11 +1339,11 @@ aie_insn_pstage:
     {
         //select proper chain to be added (itype chain or sepcific insn chain)
         if (set_common_format)
-            tmp = itype_tmp;
+            gtmp = itype_tmp;
         else
-            tmp = insn_tmp;
+            gtmp = insn_tmp;
 
-        if (!add_insn_pstage(tmp, $3)) {
+        if (!add_insn_pstage(gtmp, $3)) {
             YYERROR;
         }
     } ;
@@ -1354,11 +1356,11 @@ aie_insn_cstage:
     {
         //select proper chain to be added (itype chain or sepcific insn chain)
         if (set_common_format)
-            tmp = itype_tmp;
+            gtmp = itype_tmp;
         else
-            tmp = insn_tmp;
+            gtmp = insn_tmp;
 
-        if (!add_insn_cstage(tmp, $3)) {
+        if (!add_insn_cstage(gtmp, $3)) {
             YYERROR;
         }
     } ;
@@ -1371,11 +1373,11 @@ aie_insn_sscycle:
     {
         //select proper chain to be added (itype chain or sepcific insn chain)
         if (set_common_format)
-            tmp = itype_tmp;
+            gtmp = itype_tmp;
         else
-            tmp = insn_tmp;
+            gtmp = insn_tmp;
 
-        if (!add_insn_sscycle(tmp, $3)) {
+        if (!add_insn_sscycle(gtmp, $3)) {
             YYERROR;
         }
     } ;
@@ -1389,11 +1391,11 @@ aie_insn_ssstage:
     {
         //select proper chain to be added (itype chain or sepcific insn chain)
         if (set_common_format)
-            tmp = itype_tmp;
+            gtmp = itype_tmp;
         else
-            tmp = insn_tmp;
+            gtmp = insn_tmp;
 
-        if (!add_insn_ssstage(tmp, $3)) {
+        if (!add_insn_ssstage(gtmp, $3)) {
             YYERROR;
         }
     } ;

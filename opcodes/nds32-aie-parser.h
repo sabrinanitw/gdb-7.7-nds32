@@ -136,6 +136,105 @@
      DESTINATION_OPERAND = 353
    };
 #endif
+/* Tokens.  */
+#define END 0
+#define MINUS 258
+#define PLUS 259
+#define MUL 260
+#define DIV 261
+#define PERCENT 262
+#define COMMA 263
+#define SEMICOLON 264
+#define COLON 265
+#define DOT 266
+#define EQ 267
+#define LT 268
+#define GT 269
+#define LPAREN 270
+#define RPAREN 271
+#define LBRACK 272
+#define RBRACK 273
+#define LBRACE 274
+#define RBRACE 275
+#define DOLLAR 276
+#define CROSS 277
+#define NOT 278
+#define LOGIC_AND 279
+#define LOGIC_OR 280
+#define AT 281
+#define SQUARE 282
+#define SLASH 283
+#define SDOT 284
+#define RDOT 285
+#define SKIP 286
+#define PP 287
+#define INT 288
+#define STR 289
+#define INVALID_PRESENTABLE_TOKEN 290
+#define INVALID_IMPRESENTABLE_TOKEN 291
+#define TYPEDEF 292
+#define REGISTER 293
+#define PSEUDO 294
+#define PARTIAL_PSEUDO 295
+#define WIDTH 296
+#define REGNUM 297
+#define RD_INSN 298
+#define WR_INSN 299
+#define SYM_MAP 300
+#define SYMBOL_VALUE_MAP 301
+#define INSN 302
+#define GROUP 303
+#define CPE1 304
+#define CPE2 305
+#define CPE3 306
+#define CPE4 307
+#define MFCPD 308
+#define MTCPD 309
+#define MFCPW 310
+#define MTCPW 311
+#define MFCPPW 312
+#define MTCPPW 313
+#define CPLD_BI 314
+#define CPSD_BI 315
+#define CPLW_BI 316
+#define CPSW_BI 317
+#define LWC_BI 318
+#define SWC_BI 319
+#define LDC_BI 320
+#define SDC_BI 321
+#define CPLD 322
+#define CPSD 323
+#define CPLW 324
+#define CPSW 325
+#define LWC 326
+#define SWC 327
+#define LDC 328
+#define SDC 329
+#define CPID 330
+#define STAGE 331
+#define EACK 332
+#define LACK 333
+#define D2M 334
+#define D2C 335
+#define FORMAT 336
+#define SYNTAX 337
+#define DECODE 338
+#define ID 339
+#define PSTAGE 340
+#define CSTAGE 341
+#define SSSTAGE 342
+#define SSCYCLE 343
+#define SD 344
+#define SW 345
+#define SH 346
+#define SB 347
+#define UD 348
+#define UW 349
+#define UH 350
+#define UB 351
+#define SOURCE_OPERAND 352
+#define DESTINATION_OPERAND 353
+
 
 
 
@@ -144,7 +243,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 112 "nds32-aie-parser.y"
+#line 117 "nds32-aie-parser.y"
 
  char* text;
  int value;
@@ -152,7 +251,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 156 "nds32-aie-parser.h"
+#line 255 "nds32-aie-parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

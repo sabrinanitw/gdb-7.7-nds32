@@ -32,6 +32,9 @@ HEXA_DIGIT [0-9A-Fa-f]
 
 
 %option noyywrap
+%option nounput
+%option noinput
+
 
 %%
 

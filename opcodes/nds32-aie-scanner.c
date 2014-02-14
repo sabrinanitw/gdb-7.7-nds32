@@ -1,6 +1,5 @@
-#line 2 "nds32-aie-scanner.c"
 
-#line 4 "nds32-aie-scanner.c"
+#line 3 "nds32-aie-scanner.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -674,6 +673,7 @@ void debug_scanner_state(int state);
 
 
 
+#define YY_NO_INPUT 1
 #line 678 "nds32-aie-scanner.c"
 
 #define INITIAL 0
@@ -736,8 +736,6 @@ extern int nds32_aie_scanner_wrap (void );
 #endif
 #endif
 
-    static void yyunput (int c,char *buf_ptr  );
-    
 #ifndef yytext_ptr
 static void yy_flex_strncpy (char *,yyconst char *,int );
 #endif
@@ -864,7 +862,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 36 "nds32-aie-scanner.l"
+#line 39 "nds32-aie-scanner.l"
 
 
  char string_buf[MAX_STR_CONST];
@@ -875,7 +873,7 @@ YY_DECL
  /* Regular expressions for primitive tokens */
  /********************************************/
 
-#line 879 "nds32-aie-scanner.c"
+#line 877 "nds32-aie-scanner.c"
 
 	if ( !(yy_init) )
 		{
@@ -960,7 +958,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 46 "nds32-aie-scanner.l"
+#line 49 "nds32-aie-scanner.l"
 {
     DSPRINT("Eating spaces: \"%s\"", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -968,7 +966,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 51 "nds32-aie-scanner.l"
+#line 54 "nds32-aie-scanner.l"
 {
     DSPRINT("Including file: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -977,7 +975,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 57 "nds32-aie-scanner.l"
+#line 60 "nds32-aie-scanner.l"
 {
     DSPRINT("(PERCENT): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -989,7 +987,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 66 "nds32-aie-scanner.l"
+#line 69 "nds32-aie-scanner.l"
 {
     DSPRINT("(COMMA): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1001,7 +999,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 75 "nds32-aie-scanner.l"
+#line 78 "nds32-aie-scanner.l"
 {
     DSPRINT("(SEMICOLON): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1013,7 +1011,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 84 "nds32-aie-scanner.l"
+#line 87 "nds32-aie-scanner.l"
 {
     DSPRINT("(COLON): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1025,7 +1023,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 93 "nds32-aie-scanner.l"
+#line 96 "nds32-aie-scanner.l"
 {
     DSPRINT("(MINUS): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1037,7 +1035,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 102 "nds32-aie-scanner.l"
+#line 105 "nds32-aie-scanner.l"
 {
     DSPRINT("(PLUS): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1049,7 +1047,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 111 "nds32-aie-scanner.l"
+#line 114 "nds32-aie-scanner.l"
 {
     DSPRINT("(MUL): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1061,7 +1059,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 120 "nds32-aie-scanner.l"
+#line 123 "nds32-aie-scanner.l"
 {
     DSPRINT("(DIV): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1073,7 +1071,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 129 "nds32-aie-scanner.l"
+#line 132 "nds32-aie-scanner.l"
 {
     DSPRINT("(DOT): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1085,7 +1083,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 138 "nds32-aie-scanner.l"
+#line 141 "nds32-aie-scanner.l"
 {
     DSPRINT("(EQUAL): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1097,7 +1095,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 147 "nds32-aie-scanner.l"
+#line 150 "nds32-aie-scanner.l"
 {
     DSPRINT("(LT): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1109,7 +1107,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 156 "nds32-aie-scanner.l"
+#line 159 "nds32-aie-scanner.l"
 {
     DSPRINT("(GT): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1121,7 +1119,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 165 "nds32-aie-scanner.l"
+#line 168 "nds32-aie-scanner.l"
 {
     DSPRINT("(LPAREN): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1133,7 +1131,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 174 "nds32-aie-scanner.l"
+#line 177 "nds32-aie-scanner.l"
 {
     DSPRINT("(RPAREN): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1145,7 +1143,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 183 "nds32-aie-scanner.l"
+#line 186 "nds32-aie-scanner.l"
 {
     DSPRINT("(LBRACK): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1157,7 +1155,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 192 "nds32-aie-scanner.l"
+#line 195 "nds32-aie-scanner.l"
 {
     DSPRINT("(RBRACK): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1169,7 +1167,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 201 "nds32-aie-scanner.l"
+#line 204 "nds32-aie-scanner.l"
 {
     DSPRINT("(LBRACE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1181,7 +1179,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 210 "nds32-aie-scanner.l"
+#line 213 "nds32-aie-scanner.l"
 {
     DSPRINT("(RBRACE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1193,7 +1191,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 219 "nds32-aie-scanner.l"
+#line 222 "nds32-aie-scanner.l"
 {
     DSPRINT("(DOLLAR): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1205,7 +1203,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 228 "nds32-aie-scanner.l"
+#line 231 "nds32-aie-scanner.l"
 {
     DSPRINT("(CROSS): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1217,7 +1215,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 237 "nds32-aie-scanner.l"
+#line 240 "nds32-aie-scanner.l"
 {
     DSPRINT("(PP): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1229,7 +1227,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 246 "nds32-aie-scanner.l"
+#line 249 "nds32-aie-scanner.l"
 {
     DSPRINT("NOT: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1241,7 +1239,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 255 "nds32-aie-scanner.l"
+#line 258 "nds32-aie-scanner.l"
 {
     DSPRINT("logic and: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1253,7 +1251,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 264 "nds32-aie-scanner.l"
+#line 267 "nds32-aie-scanner.l"
 {
     DSPRINT("logic or: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1265,7 +1263,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 273 "nds32-aie-scanner.l"
+#line 276 "nds32-aie-scanner.l"
 {
     DSPRINT("AT: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1277,7 +1275,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 282 "nds32-aie-scanner.l"
+#line 285 "nds32-aie-scanner.l"
 {
     DSPRINT("SQUARE: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1289,7 +1287,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 291 "nds32-aie-scanner.l"
+#line 294 "nds32-aie-scanner.l"
 {
     DSPRINT("SLASH: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1301,7 +1299,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 300 "nds32-aie-scanner.l"
+#line 303 "nds32-aie-scanner.l"
 {
     DSPRINT("SDOT: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1313,7 +1311,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 309 "nds32-aie-scanner.l"
+#line 312 "nds32-aie-scanner.l"
 {
     DSPRINT("RDOT: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1328,7 +1326,7 @@ YY_RULE_SETUP
 /********************************************/
 case 32:
 YY_RULE_SETUP
-#line 322 "nds32-aie-scanner.l"
+#line 325 "nds32-aie-scanner.l"
 {
     DSPRINT("(TYPEDEF): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1340,7 +1338,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 331 "nds32-aie-scanner.l"
+#line 334 "nds32-aie-scanner.l"
 {
     DSPRINT("(REGISTER): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1352,7 +1350,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 340 "nds32-aie-scanner.l"
+#line 343 "nds32-aie-scanner.l"
 {
     DSPRINT("(PSEUDO): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1364,7 +1362,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 349 "nds32-aie-scanner.l"
+#line 352 "nds32-aie-scanner.l"
 {
     DSPRINT("(PARTIAL_PSEUDO): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1376,7 +1374,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 358 "nds32-aie-scanner.l"
+#line 361 "nds32-aie-scanner.l"
 {
     DSPRINT("(WIDTH): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1388,7 +1386,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 367 "nds32-aie-scanner.l"
+#line 370 "nds32-aie-scanner.l"
 {
     DSPRINT("(REGNUM): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1400,7 +1398,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 376 "nds32-aie-scanner.l"
+#line 379 "nds32-aie-scanner.l"
 {
    DSPRINT("(RD_INSN): %s", nds32_aie_scanner_text);
    DSPRINT_STATE(YY_START);
@@ -1412,7 +1410,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 385 "nds32-aie-scanner.l"
+#line 388 "nds32-aie-scanner.l"
 {
    DSPRINT("(WR_INSN): %s", nds32_aie_scanner_text);
    DSPRINT_STATE(YY_START);
@@ -1424,7 +1422,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 394 "nds32-aie-scanner.l"
+#line 397 "nds32-aie-scanner.l"
 {
     DSPRINT("(SYM_MAP): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1436,7 +1434,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 403 "nds32-aie-scanner.l"
+#line 406 "nds32-aie-scanner.l"
 {
     DSPRINT("(AIE_SYMBOL_VALUE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1448,7 +1446,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 412 "nds32-aie-scanner.l"
+#line 415 "nds32-aie-scanner.l"
 {
     DSPRINT("(AIE_INSN): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1460,7 +1458,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 422 "nds32-aie-scanner.l"
+#line 425 "nds32-aie-scanner.l"
 {
     DSPRINT("(GROUP): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1472,7 +1470,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 431 "nds32-aie-scanner.l"
+#line 434 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPID): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1484,7 +1482,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 440 "nds32-aie-scanner.l"
+#line 443 "nds32-aie-scanner.l"
 {
     DSPRINT("(STAGE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1496,7 +1494,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 449 "nds32-aie-scanner.l"
+#line 452 "nds32-aie-scanner.l"
 {
     DSPRINT("(EACK): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1508,7 +1506,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 458 "nds32-aie-scanner.l"
+#line 461 "nds32-aie-scanner.l"
 {
     DSPRINT("(LACK): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1520,7 +1518,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 467 "nds32-aie-scanner.l"
+#line 470 "nds32-aie-scanner.l"
 {
     DSPRINT("(D2C): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1532,7 +1530,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 476 "nds32-aie-scanner.l"
+#line 479 "nds32-aie-scanner.l"
 {
     DSPRINT("(D2M): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1544,7 +1542,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 485 "nds32-aie-scanner.l"
+#line 488 "nds32-aie-scanner.l"
 {
     DSPRINT("(FORMAT): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1556,7 +1554,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 494 "nds32-aie-scanner.l"
+#line 497 "nds32-aie-scanner.l"
 {
     DSPRINT("(SYNTAX): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1568,7 +1566,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 503 "nds32-aie-scanner.l"
+#line 506 "nds32-aie-scanner.l"
 {
     DSPRINT("(DECODE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1580,7 +1578,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 511 "nds32-aie-scanner.l"
+#line 514 "nds32-aie-scanner.l"
 {
     DSPRINT("(PSTAGE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1592,7 +1590,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 519 "nds32-aie-scanner.l"
+#line 522 "nds32-aie-scanner.l"
 {
     DSPRINT("(CSTAGE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1604,7 +1602,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 527 "nds32-aie-scanner.l"
+#line 530 "nds32-aie-scanner.l"
 {
     DSPRINT("(SSSTAGE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1616,7 +1614,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 535 "nds32-aie-scanner.l"
+#line 538 "nds32-aie-scanner.l"
 {
     DSPRINT("(SSCYCLE): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1628,7 +1626,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 544 "nds32-aie-scanner.l"
+#line 547 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPE1): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1640,7 +1638,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 553 "nds32-aie-scanner.l"
+#line 556 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPE2): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1652,7 +1650,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 562 "nds32-aie-scanner.l"
+#line 565 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPE3): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1664,7 +1662,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 571 "nds32-aie-scanner.l"
+#line 574 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPE4): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1676,7 +1674,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 580 "nds32-aie-scanner.l"
+#line 583 "nds32-aie-scanner.l"
 {
     DSPRINT("(MFCPD): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1688,7 +1686,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 589 "nds32-aie-scanner.l"
+#line 592 "nds32-aie-scanner.l"
 {
     DSPRINT("(MTCPD): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1700,7 +1698,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 598 "nds32-aie-scanner.l"
+#line 601 "nds32-aie-scanner.l"
 {
     DSPRINT("(MFCPW): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1712,7 +1710,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 607 "nds32-aie-scanner.l"
+#line 610 "nds32-aie-scanner.l"
 {
     DSPRINT("(MTCPW): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1724,7 +1722,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 616 "nds32-aie-scanner.l"
+#line 619 "nds32-aie-scanner.l"
 {
     DSPRINT("(MFCPPW): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1736,7 +1734,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 625 "nds32-aie-scanner.l"
+#line 628 "nds32-aie-scanner.l"
 {
     DSPRINT("(MTCPPW): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1748,7 +1746,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 634 "nds32-aie-scanner.l"
+#line 637 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPLD_BI): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1760,7 +1758,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 643 "nds32-aie-scanner.l"
+#line 646 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPSD_BI): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1772,7 +1770,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 652 "nds32-aie-scanner.l"
+#line 655 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPLW_BI): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1784,7 +1782,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 661 "nds32-aie-scanner.l"
+#line 664 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPSW_BI): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1796,7 +1794,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 670 "nds32-aie-scanner.l"
+#line 673 "nds32-aie-scanner.l"
 {
     DSPRINT("(LWC_BI): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1808,7 +1806,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 679 "nds32-aie-scanner.l"
+#line 682 "nds32-aie-scanner.l"
 {
     DSPRINT("(SWC_BI): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1820,7 +1818,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 688 "nds32-aie-scanner.l"
+#line 691 "nds32-aie-scanner.l"
 {
     DSPRINT("(LDC_BI): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1832,7 +1830,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 697 "nds32-aie-scanner.l"
+#line 700 "nds32-aie-scanner.l"
 {
     DSPRINT("(SDC_BI): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1844,7 +1842,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 706 "nds32-aie-scanner.l"
+#line 709 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPLD): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1856,7 +1854,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 715 "nds32-aie-scanner.l"
+#line 718 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPSD): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1868,7 +1866,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 724 "nds32-aie-scanner.l"
+#line 727 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPLW): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1880,7 +1878,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 733 "nds32-aie-scanner.l"
+#line 736 "nds32-aie-scanner.l"
 {
     DSPRINT("(CPSW): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1892,7 +1890,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 742 "nds32-aie-scanner.l"
+#line 745 "nds32-aie-scanner.l"
 {
     DSPRINT("(LWC): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1904,7 +1902,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 751 "nds32-aie-scanner.l"
+#line 754 "nds32-aie-scanner.l"
 {
     DSPRINT("(SWC): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1916,7 +1914,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 760 "nds32-aie-scanner.l"
+#line 763 "nds32-aie-scanner.l"
 {
     DSPRINT("(LDC): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1928,7 +1926,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 769 "nds32-aie-scanner.l"
+#line 772 "nds32-aie-scanner.l"
 {
     DSPRINT("(SDC): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1940,7 +1938,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 778 "nds32-aie-scanner.l"
+#line 781 "nds32-aie-scanner.l"
 {
     DSPRINT("(sd): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1952,7 +1950,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 787 "nds32-aie-scanner.l"
+#line 790 "nds32-aie-scanner.l"
 {
     DSPRINT("(sw): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1964,7 +1962,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 796 "nds32-aie-scanner.l"
+#line 799 "nds32-aie-scanner.l"
 {
     DSPRINT("(sh): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1976,7 +1974,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 805 "nds32-aie-scanner.l"
+#line 808 "nds32-aie-scanner.l"
 {
     DSPRINT("(sb): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -1988,7 +1986,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 814 "nds32-aie-scanner.l"
+#line 817 "nds32-aie-scanner.l"
 {
     DSPRINT("(ud): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -2000,7 +1998,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 823 "nds32-aie-scanner.l"
+#line 826 "nds32-aie-scanner.l"
 {
     DSPRINT("(uw): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -2012,7 +2010,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 832 "nds32-aie-scanner.l"
+#line 835 "nds32-aie-scanner.l"
 {
     DSPRINT("(uh): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -2024,7 +2022,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 841 "nds32-aie-scanner.l"
+#line 844 "nds32-aie-scanner.l"
 {
     DSPRINT("(ub): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -2036,7 +2034,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 850 "nds32-aie-scanner.l"
+#line 853 "nds32-aie-scanner.l"
 {
     DSPRINT("(source operand): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -2048,7 +2046,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 859 "nds32-aie-scanner.l"
+#line 862 "nds32-aie-scanner.l"
 {
     DSPRINT("(destination operand): %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -2063,7 +2061,7 @@ YY_RULE_SETUP
 /***********************************/
 case 93:
 YY_RULE_SETUP
-#line 872 "nds32-aie-scanner.l"
+#line 875 "nds32-aie-scanner.l"
 {
     string_buf[0] = '\0';
     string_buf_ptr = string_buf;
@@ -2077,7 +2075,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 883 "nds32-aie-scanner.l"
+#line 886 "nds32-aie-scanner.l"
 {
     BEGIN(return_state);
     
@@ -2091,7 +2089,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 894 "nds32-aie-scanner.l"
+#line 897 "nds32-aie-scanner.l"
 {
     *string_buf_ptr++ = *nds32_aie_scanner_text;
     *string_buf_ptr = '\0';
@@ -2103,7 +2101,7 @@ YY_RULE_SETUP
 case 96:
 /* rule 96 can match eol */
 YY_RULE_SETUP
-#line 902 "nds32-aie-scanner.l"
+#line 905 "nds32-aie-scanner.l"
 {
     *string_buf_ptr = '\0';
     AIE_SPRINT(aie_error, "Unterminate string constant:%s", string_buf);
@@ -2111,7 +2109,7 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case YY_STATE_EOF(STRING):
-#line 908 "nds32-aie-scanner.l"
+#line 911 "nds32-aie-scanner.l"
 {
     *string_buf_ptr = '\0';
     AIE_SPRINT(aie_error, "Unexpected end of file");
@@ -2123,7 +2121,7 @@ case YY_STATE_EOF(STRING):
 /********************************************/
 case 97:
 YY_RULE_SETUP
-#line 918 "nds32-aie-scanner.l"
+#line 921 "nds32-aie-scanner.l"
 {
     DSPRINT("Entering comment");
 
@@ -2134,7 +2132,7 @@ YY_RULE_SETUP
 case 98:
 /* rule 98 can match eol */
 YY_RULE_SETUP
-#line 925 "nds32-aie-scanner.l"
+#line 928 "nds32-aie-scanner.l"
 {
     INC_SLINE();
     BEGIN(return_state);
@@ -2145,14 +2143,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 933 "nds32-aie-scanner.l"
+#line 936 "nds32-aie-scanner.l"
 {
     DSPRINT("%s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
 }
 	YY_BREAK
 case YY_STATE_EOF(COMMENTA):
-#line 938 "nds32-aie-scanner.l"
+#line 941 "nds32-aie-scanner.l"
 {
     AIE_SPRINT(aie_error, "Unexpected end of file");
     yyterminate();
@@ -2163,7 +2161,7 @@ case YY_STATE_EOF(COMMENTA):
 /********************************************/
 case 100:
 YY_RULE_SETUP
-#line 947 "nds32-aie-scanner.l"
+#line 950 "nds32-aie-scanner.l"
 {
     DSPRINT("Entering comment");
     return_state = YY_START;
@@ -2172,7 +2170,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 953 "nds32-aie-scanner.l"
+#line 956 "nds32-aie-scanner.l"
 {
     BEGIN(return_state);
 
@@ -2183,7 +2181,7 @@ YY_RULE_SETUP
 case 102:
 /* rule 102 can match eol */
 YY_RULE_SETUP
-#line 960 "nds32-aie-scanner.l"
+#line 963 "nds32-aie-scanner.l"
 {
     INC_SLINE();
     DSPRINT("New line");
@@ -2192,14 +2190,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 966 "nds32-aie-scanner.l"
+#line 969 "nds32-aie-scanner.l"
 {
     DSPRINT("%s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
 }
 	YY_BREAK
 case YY_STATE_EOF(COMMENTB):
-#line 971 "nds32-aie-scanner.l"
+#line 974 "nds32-aie-scanner.l"
 {
     AIE_SPRINT(aie_error, "Unexpected end of file");
     yyterminate();
@@ -2210,7 +2208,7 @@ case YY_STATE_EOF(COMMENTB):
 /*---------------------------------*/
 case 104:
 YY_RULE_SETUP
-#line 980 "nds32-aie-scanner.l"
+#line 983 "nds32-aie-scanner.l"
 {
     unsigned long int tmp = 0;
     
@@ -2247,7 +2245,7 @@ YY_RULE_SETUP
 case 105:
 /* rule 105 can match eol */
 YY_RULE_SETUP
-#line 1013 "nds32-aie-scanner.l"
+#line 1016 "nds32-aie-scanner.l"
 {
     DSPRINT("New line");
     DSPRINT_STATE(YY_START); 
@@ -2256,7 +2254,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 1019 "nds32-aie-scanner.l"
+#line 1022 "nds32-aie-scanner.l"
 {
     DSPRINT("Skip: %s", nds32_aie_scanner_text);
     DSPRINT_STATE(YY_START);
@@ -2268,10 +2266,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 1028 "nds32-aie-scanner.l"
+#line 1031 "nds32-aie-scanner.l"
 ECHO;
 	YY_BREAK
-#line 2275 "nds32-aie-scanner.c"
+#line 2273 "nds32-aie-scanner.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2598,43 +2596,6 @@ static int yy_get_next_buffer (void)
 	yy_is_jam = (yy_current_state == 272);
 
 	return yy_is_jam ? 0 : yy_current_state;
-}
-
-    static void yyunput (int c, register char * yy_bp )
-{
-	register char *yy_cp;
-    
-    yy_cp = (yy_c_buf_p);
-
-	/* undo effects of setting up nds32_aie_scanner_text */
-	*yy_cp = (yy_hold_char);
-
-	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-		{ /* need to shift things up to make room */
-		/* +2 for EOB chars. */
-		register int number_to_move = (yy_n_chars) + 2;
-		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-		register char *source =
-				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
-
-		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
-			*--dest = *--source;
-
-		yy_cp += (int) (dest - source);
-		yy_bp += (int) (dest - source);
-		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
-
-		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
-		}
-
-	*--yy_cp = (char) c;
-
-	(yytext_ptr) = yy_bp;
-	(yy_hold_char) = *yy_cp;
-	(yy_c_buf_p) = yy_cp;
 }
 
 #ifndef YY_NO_INPUT
@@ -3269,7 +3230,7 @@ void nds32_aie_scanner_free (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 1028 "nds32-aie-scanner.l"
+#line 1031 "nds32-aie-scanner.l"
 
 
 
