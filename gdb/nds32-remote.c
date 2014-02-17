@@ -43,6 +43,7 @@
 #include "opcodes/nds32-aie.h"
 #include "opcodes/nds32-aie-utils.h"
 void nds32_init_remote_cmds (void);
+void nds32_read_copdesc_command (char *args, int from_tty);
 
 
 char *nds32_qparts [] =
