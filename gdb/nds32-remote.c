@@ -43,7 +43,7 @@
 #include "opcodes/nds32-aie.h"
 #include "opcodes/nds32-aie-utils.h"
 void nds32_init_remote_cmds (void);
-void nds32_read_copdesc_command (char *args, int from_tty);
+static void nds32_read_copdesc_command (char *args, int from_tty);
 
 
 char *nds32_qparts [] =
@@ -594,9 +594,9 @@ nds32_read_copdesc_for_openocd (char *args, int from_tty)
 	len--;
       ui_buf.buf[len] = '\0';
 
-      if (strcmp (ui_buf.buf, "AIE_ERROR") != 0)
+      if (strcmp ((char *) ui_buf.buf, "AIE_ERROR") != 0)
 	{
-	  remote_file_get (ui_buf.buf, "target.aie", from_tty);
+	  remote_file_get ((char *) ui_buf.buf, "target.aie", from_tty);
 	  fptr = fopen ("target.aie", "r");
 	  nds32_handle_aie (args, fptr);
 	  fclose(fptr);
