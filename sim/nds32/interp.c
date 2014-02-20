@@ -1223,7 +1223,7 @@ nds32_decode32_jreg (sim_cpu *cpu, const uint32_t insn, sim_cia cia)
 	CCPU_GPR[rt].u = cia + 4;
 
       cia = CCPU_GPR[rb].u;
-      /* If PSW.IFCON, it returns to $ifclp instead.  */
+      /* If PSW.IFCON, it returns to $ifc_lp instead.  */
       if (CCPU_SR_TEST (PSW, PSW_IFCON))
 	CCPU_GPR[rt] = CCPU_USR[USR0_IFCLP];
 
@@ -1304,7 +1304,7 @@ nds32_decode32_br2 (sim_cpu *cpu, const uint32_t insn, sim_cia cia)
   switch (__GF (insn, 16, 4))
     {
     case 0x0:			/* ifcall */
-      /* Do not set $ifclp when chaining ifcall.  */
+      /* Do not set $ifc_lp when chaining ifcall.  */
       if (!CCPU_SR_TEST (PSW, PSW_IFCON))
 	{
 	  if (cpu->iflags & NIF_EX9)

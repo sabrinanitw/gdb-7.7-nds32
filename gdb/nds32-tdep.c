@@ -976,7 +976,7 @@ nds32_register_name (struct gdbarch *gdbarch, int regnum)
     "fd8", "fd9", "fd10", "fd11", "fd12", "fd13", "fd14", "fd15",
     "fd16", "fd17", "fd18", "fd19", "fd20", "fd21", "fd22", "fd23",
     "fd24", "fd25", "fd26", "fd27", "fd28", "fd29", "fd30", "fd31",
-    "ifclp", "itb", "ir0"
+    "ifc_lp", "itb", "ir0"
   };
   int num_regs = gdbarch_num_regs (gdbarch);
 
