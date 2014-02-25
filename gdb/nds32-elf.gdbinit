@@ -32,6 +32,12 @@ set trust-readonly-sections 1
 # Set limit to workaround issues about backtrace in ISR or borken debug information.
 set backtrace limit 100
 
+# Set Timeout limit to wait for target to respond to 60 (defualt=2)
+# Reason: 'monitor reset target' may take over 2s and the comunication
+# 	  would be a mess because the next command will be responsed
+#	  with previous reply
+set remotetimeout 60
+
 # Handle elf-check and cache control only if the target (sid/iceman) requires.
 # In other words, do not handle elf-check and cache control for sim.
 # $_nds32_target_type is built-in convenience variable for target type:
