@@ -20,7 +20,7 @@
 
 # This commands are used for nds32 OpenOCD/SID.
 
-echo [info] Loading nds32-elf.gdbinit.\n
+echo [info] Loading .Andesgdbinit.\n
 
 # Reduce remote memory access.
 set trust-readonly-sections 1
@@ -278,4 +278,4 @@ define flash_block_size
   end
 end
 
-echo [info] nds32-elf.gdbinit loaded.\n
+echo [info] .Andesgdbinit loaded.\n
