@@ -22,7 +22,9 @@
 #ifndef ELF32_NDS32_H
 #define ELF32_NDS32_H
 
-/* Relocation flags encoded in r_addend.  */
+/*
+ * Relocation flags encoded in r_addend.
+ */
 
 /* Relocation flags for R_NDS32_ERLAX_ENTRY.  */
 
@@ -73,37 +75,44 @@ enum
 {
   NDS32_RELAX_NONE_ROUND = 0,
   NDS32_RELAX_JUMP_IFC_ROUND = 1,
+  NDS32_RELAX_IFC_ROUND,
   NDS32_RELAX_EX9_BUILD_ROUND,
   NDS32_RELAX_EX9_REPLACE_ROUND
 
 };
 
+/* There are two state in IFC optimization including general ifc (post-opt)
+   and jump ifc (j and jal).  Therefore, we have to use two different mask to
+   distinguish them.  */
 /* Optimization status mask.  */
 #define NDS32_RELAX_JUMP_IFC_DONE	(1 << 0)
 #define NDS32_RELAX_EX9_DONE		(1 << 1)
+#define NDS32_RELAX_IFC_DONE		(1 << 2)
 
 /* Optimization turn on mask.  */
-#define NDS32_RELAX_JUMP_IFC_ON		(1 << 0)
+#define NDS32_RELAX_IFC_ON		(1 << 0)
 #define NDS32_RELAX_EX9_ON		(1 << 1)
-
-/* The break 0xea defined for ex9 table to keep for trace32 to use 0xeaea.  */
-#define INSN_BREAK_EA   0x64001d4a
 
-extern void nds32_insertion_sort
-  (void *, size_t, size_t, int (*) (const void *, const void *));
+void nds32_insertion_sort
+  (void *base, size_t nmemb, size_t size,
+   int (*compar) (const void *lhs, const void *rhs));
 
-extern int         nds32_elf_ex9_init (void);
-extern void        nds32_elf_ex9_reloc_jmp (struct bfd_link_info *);
-extern void        nds32_elf_ex9_finish (struct bfd_link_info *);
-extern bfd_boolean nds32_elf_ex9_itb_base (struct bfd_link_info *);
-extern void        nds32_elf_ex9_import_table (struct bfd_link_info *);
-extern bfd_boolean nds32_elf_ifc_reloc (void);
-extern bfd_boolean nds32_elf_ifc_finish (struct bfd_link_info *);
-extern int         nds32_convert_32_to_16 (bfd *, uint32_t, uint16_t *, int *);
-extern int         nds32_convert_16_to_32 (bfd *, uint16_t, uint32_t *);
-extern void        bfd_elf32_nds32_set_target_option (struct bfd_link_info *, int, int,
-						      FILE *, int, int, int, int, FILE *, FILE *,
-						      int, int, bfd_boolean, bfd_boolean);
+int nds32_elf_ex9_init (void);
+void nds32_elf_ex9_reloc_jmp (struct bfd_link_info *link_info);
+void nds32_elf_ex9_finish (struct bfd_link_info *link_info);
+bfd_boolean nds32_elf_ex9_itb_base (struct bfd_link_info *info);
+void nds32_elf_ex9_import_table (struct bfd_link_info *link_info);
+
+bfd_boolean nds32_elf_ifc_reloc (void);
+bfd_boolean nds32_elf_ifc_finish (struct bfd_link_info *);
+void bfd_elf32_nds32_set_target_option (struct bfd_link_info *, int, int,
+					FILE *, int, int, int, int, FILE *, FILE *,
+					int, int, bfd_boolean, bfd_boolean);
+int nds32_convert_32_to_16
+  (bfd *abfd, uint32_t insn, uint16_t *pinsn16, int *pinsn_type);
+int nds32_convert_16_to_32 (bfd *abfd, uint16_t insn16, uint32_t *pinsn);
+int nds32_elf_ifc_init (void);
+bfd_boolean nds32_elf_ifc_cse_algo (struct bfd_link_info *);
 
 #define nds32_elf_hash_table(info) \
   (elf_hash_table_id ((struct elf_link_hash_table *) ((info)->hash)) \
