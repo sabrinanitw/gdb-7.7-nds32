@@ -75,64 +75,42 @@ int ex9_ready = 0, ex9_base_offset = 0;
 static htab_t opcode_htab;
 
 static void
-nds32_get_itb_base (struct disassemble_info *info)
-{
-  asymbol *psym_tab;
-  int i;
-
-  for (i = 0; i < info->symtab_size; i++)
-    {
-      psym_tab = info->symtab[i];
-      if (psym_tab->name)
-	{
-	  if (strstr (psym_tab->name, "_ITB_BASE_") != NULL)
-	    ex9_base_offset = psym_tab->value;
-	}
-    }
-}
-
-static void
-nds32_get_ex9_contents (disassemble_info *info, unsigned int *max_size)
-{
-  struct objdump_disasm_info *paux;
-  bfd *abfd;
-  asection *sect;
-  bfd_size_type datasize = 0;
-
-  paux = (struct objdump_disasm_info *) info->application_data;
-  abfd = paux->abfd;
-  sect = bfd_get_section_by_name (abfd, ".ex9.itable");
-  if (sect == NULL)
-    {
-      /* check EX9-info ERROR.  */
-      ex9_ready = -1;
-      return;
-    }
-  datasize = bfd_get_section_size (sect);
-  *max_size = datasize - 4;
-  ex9_data = (bfd_byte *) xmalloc (datasize);
-  bfd_get_section_contents (abfd, sect, ex9_data, 0, datasize);
-  /* free (ex9_data), maybe free this buffer.  */
-  ex9_ready = 1;
-  nds32_get_itb_base (info);
-}
-
-static void
 nds32_ex9_info (bfd_vma pc ATTRIBUTE_UNUSED,
 		disassemble_info *info, uint32_t ex9_index)
 {
   uint32_t insn;
-  static unsigned int max_size = 0;
+  static asymbol *itb = NULL;
+  bfd_byte buffer[4];
+  long unsigned int isec_vma;
 
-  if (ex9_ready == 0)
-    nds32_get_ex9_contents (info, &max_size);
-  if (ex9_ready == -1)
+  /* Lookup itb symbol. */
+  if (!itb)
+    {
+      int i;
+
+      for (i = 0; i < info->symtab_size; i++)
+	if (bfd_asymbol_name (info->symtab[i])
+	    && (strcmp (bfd_asymbol_name (info->symtab[i]), "$_ITB_BASE_") == 0
+		|| strcmp (bfd_asymbol_name (info->symtab[i]),
+			   "_ITB_BASE_") == 0))
+	  {
+	    itb = info->symtab[i];
+	    break;
+	  }
+
+      /* Lookup it only once, in case _ITB_BASE_ doesn't exist at all.  */
+      if (itb == NULL)
+	itb = (void *) -1;
+    }
+
+  if (itb == (void *) -1)
     return;
 
-  if (max_size < (ex9_index << 2) + ex9_base_offset)
-    return;
-
-  insn = bfd_getb32 (&ex9_data[(ex9_index << 2) + ex9_base_offset]);
+  isec_vma = itb->section->vma;
+  isec_vma = itb->section->vma - bfd_asymbol_value (itb);
+  bfd_get_section_contents (itb->section->owner, itb->section, buffer,
+			    ex9_index * 4 - isec_vma, 4);
+  insn = bfd_getb32 (buffer);
   /* 16-bit instructions in ex9 table.  */
   if (insn & 0x80000000)
     print_insn16 (pc, info, (insn & 0x0000FFFF),
