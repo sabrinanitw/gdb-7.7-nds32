@@ -34,7 +34,7 @@ set backtrace limit 100
 
 # Set Timeout limit to wait for target to respond to 60 (defualt=2)
 # Reason: 'monitor reset target' may take over 2s and the comunication
-# 	  would be a mess because the next command will be responsed
+#	  would be a mess because the next command will be responsed
 #	  with previous reply
 set remotetimeout 60
 
@@ -57,13 +57,20 @@ define target hookpost-sim
   nds32 query target
 end
 
-# Force return (goto $ifc_lp) in ifc common block.
+# Force to go through ifc common block if $ir0.FCON is set
 set $nds32_force_ifc_return = 1
 define hook-stop
   if $_nds32_target_type
-     if ((int) $ir0 & 0x8000) && $ifc_lp && $nds32_force_ifc_return
-       advance *$ifc_lp
-     end
+    if ((int) $ir0 & 0x8000 )
+      set logging on
+      set logging file .nds32_temp.log
+      #echo ifc.fcon is on\n
+      set logging redirect on
+    end
+    while (((int) $ir0 & 0x8000) && $ifc_lp && $nds32_force_ifc_return )
+      stepi
+    end
+    set logging redirect off
   end
 end
 
