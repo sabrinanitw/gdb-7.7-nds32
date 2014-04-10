@@ -57,20 +57,34 @@ define target hookpost-sim
   nds32 query target
 end
 
-# Force to go through ifc common block if $ir0.FCON is set
+# Force to go through ifc common block if $psw.IFCON is ON
+# Distinguish stop caused by breakpoint from others -- step, stepi, next, nexti
 set $nds32_force_ifc_return = 1
+
+define hook-continue
+  set $_nds32_flag_continue = 1
+end
 define hook-stop
   if $_nds32_target_type
-    if ((int) $ir0 & 0x8000 )
+    if ((int) $ir0 & 0x8000)
+      # Take care of display issue
       set logging on
       set logging file .nds32_temp.log
-      #echo ifc.fcon is on\n
+      echo ifc.fcon is on\n
       set logging redirect on
-    end
-    while (((int) $ir0 & 0x8000) && $ifc_lp && $nds32_force_ifc_return )
-      stepi
+
+      # If stop caused by breakpoint, resume by continue
+      # Otherwise, single stepi until $psw.IFCON bit is OFF
+      if ($_nds32_flag_continue && $nds32_force_ifc_return)
+	continue
+      else
+	while (((int) $ir0 & 0x8000) && $nds32_force_ifc_return )
+	  stepi
+	end
+      end
     end
     set logging redirect off
+    set $_nds32_flag_continue = 0
   end
 end
 
