@@ -251,8 +251,8 @@ struct nds32_opcode nds32_opcodes[] =
   {"bitci", "=rt,%ra,%i15u",	OP6 (BITCI), 4, ATTR_V3, 0, NULL, 0, NULL},
 
   /* seg-DPREFI.  */
-  {"dprefi.w", "%dpref_st,[%ra{+%i15s2]}",	OP6 (DPREFI), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
-  {"dprefi.d", "%dpref_st,[%ra{+%i15s3]}",	OP6 (DPREFI) | __BIT (24), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
+  {"dprefi.w", "%dpref_st,[%ra{+%i15s2}]",	OP6 (DPREFI), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
+  {"dprefi.d", "%dpref_st,[%ra{+%i15s3}]",	OP6 (DPREFI) | __BIT (24), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
   /* seg-LBGP.  */
   {"lbi.gp", "=rt,[+%i19s]",	OP6 (LBGP), 4, ATTR (GPREL) | ATTR_V2UP, USE_REG (29), NULL, 0, NULL},
   {"lbsi.gp", "=rt,[+%i19s]",	OP6 (LBGP) | __BIT (19), 4, ATTR (GPREL) | ATTR_V2UP, USE_REG (29), NULL, 0, NULL},
@@ -412,8 +412,8 @@ struct nds32_opcode nds32_opcodes[] =
   {"mfsr", "=rt,%sr",		MISC (MFSR), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"iret", "",			MISC (IRET), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"trap", "%swid",		MISC (TRAP), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
-  {"teqz", "%rt,%swid",		MISC (TEQZ), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
-  {"tnez", "%rt,%swid",		MISC (TNEZ), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
+  {"teqz", "%rt{,%swid}",		MISC (TEQZ), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
+  {"tnez", "%rt{,%swid}",		MISC (TNEZ), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
   {"dsb", "",			MISC (DSB), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"isb", "",			MISC (ISB), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"break", "%swid",		MISC (BREAK), 4, ATTR_ALL, 0, NULL, 0, NULL},
@@ -449,10 +449,13 @@ struct nds32_opcode nds32_opcodes[] =
   {"ld", "=rt,[%ra+(%rb<<%sv)]",	MEM (LD), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lb.bi", "=rt,[%ra],%rb{<<%sv}",	MEM (LB_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lb.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (LB_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
+  {"lb.p", "=rt,[%ra],%rb{<<%sv}",	MEM (LB_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lh.bi", "=rt,[%ra],%rb{<<%sv}",	MEM (LH_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lh.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (LH_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
+  {"lh.p", "=rt,[%ra],%rb{<<%sv}",	MEM (LH_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lw.bi", "=rt,[%ra],%rb{<<%sv}",	MEM (LW_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lw.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (LW_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
+  {"lw.p", "=rt,[%ra],%rb{<<%sv}",	MEM (LW_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"ld.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (LD_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sb", "=rt,[%ra+(%rb<<%sv)]",	MEM (SB), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sb", "%rt,[%ra+%rb{<<%sv}]",	MEM (SB), 4, ATTR_ALL, 0, NULL, 0, NULL},
@@ -463,10 +466,13 @@ struct nds32_opcode nds32_opcodes[] =
   {"sd", "=rt,[%ra+(%rb<<%sv)]",	MEM (SD), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sb.bi", "%rt,[%ra],%rb{<<%sv}",	MEM (SB_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sb.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (SB_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
+  {"sb.p", "%rt,[%ra],%rb{<<%sv}",	MEM (SB_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sh.bi", "%rt,[%ra],%rb{<<%sv}",	MEM (SH_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sh.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (SH_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
+  {"sh.p", "%rt,[%ra],%rb{<<%sv}",	MEM (SH_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sw.bi", "%rt,[%ra],%rb{<<%sv}",	MEM (SW_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sw.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (SW_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
+  {"sw.p", "%rt,[%ra],%rb{<<%sv}",	MEM (SW_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"sd.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (SD_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
 
   {"lbs", "=rt,[%ra+(%rb<<%sv)]",	MEM (LBS), 4, ATTR_ALL, 0, NULL, 0, NULL},
@@ -475,8 +481,10 @@ struct nds32_opcode nds32_opcodes[] =
   {"lhs", "=rt,[%ra+%rb{<<%sv}]",	MEM (LHS), 4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lbs.bi", "=rt,[%ra],%rb{<<%sv}",	MEM (LBS_BI),4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lbs.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (LBS_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
+  {"lbs.p", "=rt,[%ra],%rb{<<%sv}",	MEM (LBS_BI),4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lhs.bi", "=rt,[%ra],%rb{<<%sv}",	MEM (LHS_BI),4, ATTR_ALL, 0, NULL, 0, NULL},
   {"lhs.bi", "=rt,[%ra],(%rb<<%sv)",	MEM (LHS_BI), 4, ATTR_ALL, 0, NULL, 0, NULL},
+  {"lhs.p", "=rt,[%ra],%rb{<<%sv}",	MEM (LHS_BI),4, ATTR_ALL, 0, NULL, 0, NULL},
   {"llw", "=rt,[%ra+(%rb<<%sv)]",	MEM (LLW), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
   {"llw", "=rt,[%ra+%rb{<<%sv}]",	MEM (LLW), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
   {"scw", "%rt,[%ra+(%rb<<%sv)]",	MEM (SCW), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
@@ -491,6 +499,7 @@ struct nds32_opcode nds32_opcodes[] =
   {"swup", "%rt,[%ra+(%rb<<%sv)]",	MEM (SWUP), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
   {"swup", "%rt,[%ra+%rb{<<%sv}]",	MEM (SWUP), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
 
+  {"dpref", "%dpref_st,[%ra]",	OP6 (DPREFI), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
   {"dpref", "%dpref_st,[%ra+(%rb<<%sv)]",	MEM (DPREF), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
   {"dpref", "%dpref_st,[%ra+%rb{<<%sv}]",	MEM (DPREF), 4, ATTR_V3MEX_V1, 0, NULL, 0, NULL},
 
@@ -2132,7 +2141,7 @@ parse_insn (nds32_asm_desc_t *pdesc, nds32_asm_insn_t *pinsn,
 	  if (IS_LEX_CHAR (*plex))
 	    {
 	      /* If it's a plain char, just compare it.  */
-	      if (LEX_CHAR (*plex) != *p)
+	      if (LEX_CHAR (*plex) != TOLOWER (*p))
 		{
 		  pdesc->result = NASM_ERR_SYNTAX;
 		  goto reject;
