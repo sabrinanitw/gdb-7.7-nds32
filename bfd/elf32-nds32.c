@@ -4200,12 +4200,13 @@ nds32_elf_relocate_section (bfd *output_bfd ATTRIBUTE_UNUSED,
       else
 	{
 	  /* External symbol.  */
-	  bfd_boolean warned, unresolved_reloc;
+	  bfd_boolean warned, ignored, unresolved_reloc;
 	  int symndx = r_symndx - symtab_hdr->sh_info;
 
 	  RELOC_FOR_GLOBAL_SYMBOL (info, input_bfd, input_section, rel,
 				   r_symndx, symtab_hdr, sym_hashes, h, sec,
-				   relocation, unresolved_reloc, warned);
+				   relocation, unresolved_reloc, warned,
+				   ignored);
 
 	  /* la $fp, _FP_BASE_ is per-function (region).
 	     Handle it specially.  */
@@ -14101,6 +14102,7 @@ nds32_elf_ex9_build_hash_table (bfd * abfd, asection * sec,
 		    {
 		      /* External symbol.  */
 		      bfd_boolean warned ATTRIBUTE_UNUSED;
+		      bfd_boolean ignored ATTRIBUTE_UNUSED;
 		      bfd_boolean unresolved_reloc ATTRIBUTE_UNUSED;
 		      asection *sym_sec;
 
@@ -14108,7 +14110,7 @@ nds32_elf_ex9_build_hash_table (bfd * abfd, asection * sec,
 		      RELOC_FOR_GLOBAL_SYMBOL (link_info, abfd, sec, irel,
 					       r_symndx, symtab_hdr, sym_hashes,
 					       h, sym_sec, relocation,
-					       unresolved_reloc, warned);
+					       unresolved_reloc, warned, ignored);
 		      relocation += irel->r_addend;
 		      if ((h->root.type != bfd_link_hash_defined
 			   && h->root.type != bfd_link_hash_defweak)
