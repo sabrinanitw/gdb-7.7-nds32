@@ -112,7 +112,6 @@ define hookpost-load
       monitor nds mem_access cpu
     end
     set $mr8 = $old_mr8
-    nds32 set-gloss
   end
 end
 
@@ -134,12 +133,6 @@ define hookpost-restore
   if $_nds32_target_type
     set $mr8 = $old_mr8
   end
-end
-
-# set args if target is SID
-# this should be implement with vRun
-define set hookpost-args
-  nds32 set-gloss
 end
 
 # reset and hold
