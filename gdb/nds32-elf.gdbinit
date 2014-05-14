@@ -53,10 +53,6 @@ define target hookpost-extended-remote
   nds32 query target
 end
 
-define target hookpost-sim
-  nds32 query target
-end
-
 # Force to go through ifc common block if $psw.IFCON is ON
 # Distinguish stop caused by breakpoint from others -- step, stepi, next, nexti
 set $nds32_force_ifc_return = 1
