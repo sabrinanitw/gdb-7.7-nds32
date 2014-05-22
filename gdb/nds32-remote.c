@@ -1073,7 +1073,6 @@ nds32_remote_inferior_created_observer (struct target_ops *target,
 				|| strcmp (target->to_shortname, "extended-remote") == 0)
 			&& target->to_stopped_data_address != nds32_remote_stopped_data_address)
 	{
-		printf ("[nds32] Hook remote stopped data address for watchpoints.\n");
 		remote_stopped_data_address_p = target->to_stopped_data_address;
 		target->to_stopped_data_address = nds32_remote_stopped_data_address;
 	}
